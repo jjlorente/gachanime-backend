@@ -6,6 +6,6 @@ const router = express.Router();
 router.get("/", UserController.findAllUsers);
 // router.get("/:id", UserController.findById);
 // router.put("/:id", UserController.updateUser);
-// router.post("/add", UserController.addUser);
+router.post("/find", UserController.findByUsernameAndPassword);
 
 module.exports = router;

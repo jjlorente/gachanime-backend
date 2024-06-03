@@ -10,7 +10,29 @@ const findAllUsers = async (req, res) => {
     }
 };
 
-module.exports = { findAllUsers };
+const findByUsernameAndPassword = async (req, res) => {
+    const { username, password } = req.body;
+    
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        console.log(user)
+        const isMatch = await user.password === password;
+        if (!isMatch) {
+            return res.status(400).json({ error: 'Credenciales inválidas' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Error al recuperar el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+module.exports = { findAllUsers, findByUsernameAndPassword };
 
 // const findById = (req, res) => {
 //     User.findById(req.params.id)
