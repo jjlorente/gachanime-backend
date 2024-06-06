@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 const User = require("../models/User");
 
 const findAllUsers = async (req, res) => {
@@ -20,7 +21,7 @@ const findByUsernameAndPassword = async (req, res) => {
         }
 
         console.log(user)
-        const isMatch = await user.password === password;
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
@@ -32,7 +33,33 @@ const findByUsernameAndPassword = async (req, res) => {
     }
 };
 
-module.exports = { findAllUsers, findByUsernameAndPassword };
+const addUser = async (req, res) => {
+    const { username, password  } = req.body;
+    try {
+        const user = await User.findOne({ username });
+        if (user) {
+            return res.status(404).json({ error: 'Nombre de usuario en uso' });
+        }
+
+        // Encriptar la contraseña
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        let newUser = new User({
+            username: req.body.username,
+            password: hashedPassword,
+        });
+
+        const savedUser = await newUser.save();
+        res.status(201).json(savedUser);
+
+    } catch (error) {
+        console.error('Error al guardar el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+module.exports = { findAllUsers, findByUsernameAndPassword, addUser };
 
 // const findById = (req, res) => {
 //     User.findById(req.params.id)

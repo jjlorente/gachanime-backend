@@ -7,5 +7,6 @@ router.get("/", UserController.findAllUsers);
 // router.get("/:id", UserController.findById);
 // router.put("/:id", UserController.updateUser);
 router.post("/find", UserController.findByUsernameAndPassword);
+router.post("/create", UserController.addUser);
 
 module.exports = router;
