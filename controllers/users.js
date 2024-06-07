@@ -11,6 +11,19 @@ const findAllUsers = async (req, res) => {
     }
 };
 
+const findById = async (req, res) => {
+    const { id } = req.query; 
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
 const findByUsernameAndPassword = async (req, res) => {
     const { username, password } = req.body;
     
@@ -26,19 +39,57 @@ const findByUsernameAndPassword = async (req, res) => {
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
 
-        res.status(200).json(user);
+        if (user) {
+            user.googleAccount = req.body.googleAccount;
+            await user.save();
+            res.status(200).json(user);
+        }
+
     } catch (error) {
         console.error('Error al recuperar el usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
+const findByGoogleAccount = async (req, res) => {
+    const { username, email, googleAccount } = req.body;
+
+    try {
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = new User({
+                username,
+                email,
+                googleAccount
+            });
+
+            const savedUser = await user.save();
+            res.status(201).json(savedUser);
+        } else {
+            user.googleAccount = googleAccount;
+            await user.save();
+            res.status(200).json(user);
+        }
+    } catch (error) {
+        console.error('Error al recuperar el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+
 const addUser = async (req, res) => {
-    const { username, password  } = req.body;
+    const { username, password, email  } = req.body;
     try {
         const user = await User.findOne({ username });
+        const existingUserByEmail = await User.findOne({ email });
+
         if (user) {
             return res.status(404).json({ error: 'Nombre de usuario en uso' });
+        }
+
+        if (existingUserByEmail) {
+            return res.status(404).json({ error: 'Correo electrónico en uso' });
         }
 
         // Encriptar la contraseña
@@ -48,6 +99,8 @@ const addUser = async (req, res) => {
         let newUser = new User({
             username: req.body.username,
             password: hashedPassword,
+            email: req.body.email,
+            googleAccount: req.body.googleAccount
         });
 
         const savedUser = await newUser.save();
@@ -59,7 +112,7 @@ const addUser = async (req, res) => {
     }
 }
 
-module.exports = { findAllUsers, findByUsernameAndPassword, addUser };
+module.exports = { findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById };
 
 // const findById = (req, res) => {
 //     User.findById(req.params.id)
