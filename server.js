@@ -4,8 +4,15 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const socketIO = require('socket.io');
 const cors = require('cors');
+const helmet = require('helmet');
 
 const app = express();
+app.use(helmet({
+    contentSecurityPolicy: false,
+    referrerPolicy: {
+      policy: 'strict-origin-when-cross-origin'
+    }
+}));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
