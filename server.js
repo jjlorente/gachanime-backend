@@ -24,6 +24,9 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
 const Users = require('./api/users');
+const Gachas = require('./api/gachas');
+
+app.use('/api/gachas', Gachas);
 app.use('/api/users', Users);
 
 app.get('/api/health', (req, res) => {

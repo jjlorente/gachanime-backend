@@ -8,4 +8,4 @@ const UserSchema = new Schema({
     googleAccount: { type: Boolean, required: true }
 });
 
-module.exports = Card = mongoose.model('User', UserSchema);
+module.exports = User = mongoose.model('User', UserSchema);
