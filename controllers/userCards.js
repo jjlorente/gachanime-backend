@@ -9,9 +9,7 @@ const findById = async (req, res) => {
     }
 
     try {
-        console.log(id)
         const userCards = await UserCard.findOne({ userid: id });
-        console.log(userCards)
         if (!userCards) {
             return res.status(404).json({ error: 'Cards no encontradas' });
         }
@@ -21,4 +19,42 @@ const findById = async (req, res) => {
     }
 };
 
-module.exports = { findById };
+const addUserCard = async (req, res) => {
+    const { userId  } = req.body;
+    try {
+        let newUserCard = new UserCard({
+            userid: userId,
+            cards: []
+        });
+
+        const savedUserCard = await newUserCard.save();
+        res.status(201).json(savedUserCard);
+
+    } catch (error) {
+        console.error('Error al guardar UserCard del usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+const addCardsToUser = async (userId, newCards) => {
+  try {
+    let userCard = await UserCard.findOne({ userid: userId });
+
+    if (!userCard) {
+      userCard = new UserCard({ userid: userId, cards: newCards });
+    } else {
+      await UserCard.updateOne(
+        { userid: userId },
+        { $addToSet: { cards: { $each: newCards } } }
+      );
+    }
+
+    return userCard;
+  } catch (err) {
+    console.error(err.message);
+    throw new Error('Error adding cards to user');
+  }
+};
+
+
+module.exports = { findById, addCardsToUser, addUserCard };

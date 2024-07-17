@@ -7,7 +7,8 @@ const GachaSchema = new Schema({
         ref: 'User',
         required: true 
     },
-    gachas: { type: Number, required: true }
+    gachas: { type: Number, required: true },
+    throws: { type: Number, required: true }
 });
 
 module.exports = Gacha = mongoose.model('Gacha', GachaSchema);

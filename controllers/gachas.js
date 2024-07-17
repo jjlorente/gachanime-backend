@@ -8,6 +8,7 @@ const addGacha = async (req, res) => {
         let newGacha = new Gacha({
             userid: userId,
             gachas: gachas,
+            throws: 0
         });
 
         const savedGacha = await newGacha.save();
