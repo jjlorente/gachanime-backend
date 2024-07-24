@@ -24,6 +24,10 @@ const UserGamesSchema = new Schema({
     triesimage: {
         type: Number,
         required: true
+    },
+    resets: {
+        type: Number,
+        required: true
     }
 });
 
