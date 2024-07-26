@@ -5,6 +5,9 @@ const http = require('http');
 const socketIO = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
+const cron = require('node-cron');
+
+const UserGamesCollection = require('./models/UserGames'); 
 
 const app = express();
 app.use(helmet({
@@ -50,7 +53,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/gachanime', { useNewUrlParser: true,
         console.error('Error al conectar a MongoDB:', error.message);
     });
 
-
+cron.schedule('00 00 * * *', async () => {
+    try {
+        await UserGamesCollection.deleteMany({});
+        console.log('All documents deleted from UserGames collection');
+    } catch (err) {
+        console.error('Error deleting documents:', err);
+    }
+    });
 
 
 io.on('connection', (socket) => {

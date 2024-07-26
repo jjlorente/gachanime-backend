@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const UserGames = require("../models/UserGames");
 const Game = require("../models/Game");
+const Gachas = require("../models/Gacha");
 
 const findById = async (req, res) => {
     const { id } = req.query; 
@@ -61,7 +62,11 @@ const addNewGamesUser = async (req, res) => {
             imageid: randomImageGame._id,
             triesname: 0,
             triesimage: 0,
-            resets: 5
+            resets: 5,
+            finishedImage: false,
+            finishedName: false,
+            statusRewardImage: 0,
+            statusRewardName: 0
         });
 
         const savedUserGames = await newUserGames.save();
@@ -73,4 +78,117 @@ const addNewGamesUser = async (req, res) => {
     }
 }
 
-module.exports = { findById, findGameImageById, addNewGamesUser };
+const updateImageGame = async (req, res) => {
+    const { userid, finishedImage, resets, triesimage, statusRewardImage } = req.body;
+    try {
+        const userGame = await UserGames.findOne({ userid: userid });
+        
+        if (!userGame) {
+            return res.status(404).json({ error: 'UserGame no encontrado' });
+        }
+
+        if (userGame) {
+            userGame.finishedImage = finishedImage;
+            userGame.resets = userGame.resets + resets;
+            userGame.triesimage = userGame.triesimage + triesimage;
+            userGame.statusRewardImage = statusRewardImage;
+            await userGame.save();
+            res.status(200).json(userGame);
+        }
+
+    } catch (error) {
+        console.error('Error al recuperar el userGame:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+const updateImageSelected = async (req, res) => {
+    const { userid, numImage } = req.body;
+    try {
+        const userGame = await UserGames.findOne({ userid: userid });
+        
+        if (!userGame) {
+            return res.status(404).json({ error: 'UserGame no encontrado' });
+        }
+
+        if (userGame) {
+            userGame.imageSelected = numImage;
+            await userGame.save();
+            res.status(200).json(userGame);
+        }
+
+    } catch (error) {
+        console.error('Error al recuperar el userGame:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+const updateClaimImageReward = async (req, res) => {
+    const { userid, gachas, status } = req.body;
+    try {
+        const userGame = await UserGames.findOne({ userid: userid });
+        const userGacha = await Gachas.findOne({ userid: userid });
+
+        if (!userGame || !userGacha) {
+            return res.status(404).json({ error: 'UserGame no encontrado o gacha' });
+        }
+
+        if (userGame && userGacha) {
+            userGame.statusRewardImage = status;
+            userGacha.gachas = userGacha.gachas + gachas;
+            await userGame.save();
+            await userGacha.save();
+            res.status(200).json([userGame, userGacha]);
+        }
+
+    } catch (error) {
+        console.error('Error al recuperar el userGame:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+const resetGame = async (req, res) => {
+    const { userid, game } = req.body;
+    try {
+        const userGame = await UserGames.findOne({ userid: userid });
+        let randomGame = await findRandomGame();
+        let differentAnime = false;
+
+        while(differentAnime === false) {
+            if(game === "image") {
+                if(randomGame._id.toString() === userGame.imageid.toString()) {
+                    randomGame = await findRandomGame();
+                } else {
+                    differentAnime = true;
+                }
+            } else if (game==="name") {
+                if(randomGame._id === userGame.nameid) {
+                    randomGame = await findRandomGame();
+                } else {
+                    differentAnime = true;
+                }
+            }
+        }
+
+        if (!userGame) {
+            return res.status(404).json({ error: 'UserGame no encontrado o gacha' });
+        }
+
+        if (userGame) {
+            if(game === "image") {
+                userGame.imageid = randomGame._id;
+            } else if (game === "name") {
+                userGame.nameid = randomGame._id;
+            }
+            userGame.resets = userGame.resets - 1;
+            await userGame.save();
+            res.status(200).json(userGame);
+        }
+
+    } catch (error) {
+        console.error('Error al recuperar el userGame:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+module.exports = { findById, findGameImageById, addNewGamesUser, updateImageGame, updateClaimImageReward, resetGame, updateImageSelected };

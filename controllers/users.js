@@ -115,41 +115,6 @@ const addUser = async (req, res) => {
 
 module.exports = { findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById };
 
-// const findById = (req, res) => {
-//     User.findById(req.params.id)
-//         .then(user => {
-//             if (user) {
-//                 res.status(200).json(user);
-//             } else {
-//                 res.status(404).json({ error: 'Usuario no encontrado' });
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error al recuperar el usuario:', error);
-//             res.status(500).json({ error: 'Error interno del servidor' });
-//         });
-// };
-
-// const addUser = (req, res) => {
-//     let user = new User({
-//         name: req.body.name,
-//         age: req.body.age,
-//         gender: req.body.gender,
-//         sexuality: req.body.sexuality,
-//         ageRange: req.body.ageRange
-//     });
-
-//     user.save()
-//     .then(savedUser => {
-//         res.status(201).json(savedUser);
-//     })
-//     .catch(error => {
-//         console.error('Error al guardar el usuario:', error);
-//         res.status(500).json({ error: 'Error interno del servidor' });
-//     });
-
-// }
-
 // const updateUser = (req, res) => {
 //     const userId = req.params.id;
   

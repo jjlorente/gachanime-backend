@@ -28,6 +28,22 @@ const UserGamesSchema = new Schema({
     resets: {
         type: Number,
         required: true
+    },
+    finishedImage: {
+        type: Boolean,
+        required: true
+    },
+    finishedName: {
+        type: Boolean,
+        required: true
+    },
+    statusRewardImage: {
+        type: Number,
+        required: true
+    },
+    imageSelected: {
+        type: Number,
+        required: false
     }
 });
 
