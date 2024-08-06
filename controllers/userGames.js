@@ -147,6 +147,16 @@ const updateClaimImageReward = async (req, res) => {
     }
 };
 
+const resetDailyGames = async (req, res) => {
+    try {
+        await UserGames.deleteMany({});
+        res.status(200).json("Reset");
+    } catch (err) {
+        console.error('Error deleting documents:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 const resetGame = async (req, res) => {
     const { userid, game } = req.body;
     try {
@@ -191,4 +201,4 @@ const resetGame = async (req, res) => {
     }
 };
 
-module.exports = { findById, findGameImageById, addNewGamesUser, updateImageGame, updateClaimImageReward, resetGame, updateImageSelected };
+module.exports = { findById, findGameImageById, addNewGamesUser, updateImageGame, updateClaimImageReward, resetGame, updateImageSelected, resetDailyGames };

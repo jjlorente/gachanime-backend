@@ -10,5 +10,6 @@ router.put("/update", UserGamesController.updateImageGame);
 router.put("/updateReward", UserGamesController.updateClaimImageReward);
 router.put("/resetGame", UserGamesController.resetGame);
 router.put("/updateImageSelected", UserGamesController.updateImageSelected);
+router.delete("/deleteAll", UserGamesController.resetDailyGames);
 
 module.exports = router;
