@@ -63,12 +63,12 @@ cron.schedule('00 00 * * *', async () => {
     });
 
 
-io.on('connection', (socket) => {
-    console.log('Nuevo cliente conectado');
+// io.on('connection', (socket) => {
+//     console.log('Nuevo cliente conectado');
 
-    socket.on('disconnect', () => {
-        console.log('Cliente desconectado');
-    });
+//     socket.on('disconnect', () => {
+//         console.log('Cliente desconectado');
+//     });
 
-    // Aquí puedes manejar otros eventos de socket.io
-});
+//     // Aquí puedes manejar otros eventos de socket.io
+// });

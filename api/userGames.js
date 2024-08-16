@@ -1,6 +1,5 @@
 const UserGamesController = require ('../controllers/userGames');
 const express = require('express');
-
 const router = express.Router();
 
 router.get("/findById", UserGamesController.findById);
