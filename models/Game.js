@@ -13,6 +13,10 @@ const GameSchema = new Schema({
     image_game: [{ 
         type: String, 
         required: true 
+    }],
+    silueta_game: [{ 
+        type: String, 
+        required: true 
     }]
 });
 
