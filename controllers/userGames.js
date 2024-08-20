@@ -55,17 +55,22 @@ const addNewGamesUser = async (req, res) => {
     try {
         const randomNameGame = await findRandomGame();
         const randomImageGame = await findRandomGame();
+        const randomSiluetaGame = await findRandomGame();
 
         let newUserGames = new UserGames({
             userid: userId,
             nameid: randomNameGame._id,
             imageid: randomImageGame._id,
+            siluetaid: randomSiluetaGame._id,
             triesname: 0,
             triesimage: 0,
+            triessilueta: 0,
             resets: 5,
             finishedImage: false,
             finishedName: false,
+            finishedSilueta: false,
             statusRewardImage: 0,
+            statusRewardSilueta: 0,
             statusRewardName: 0
         });
 
@@ -171,7 +176,7 @@ const resetGame = async (req, res) => {
                 } else {
                     differentAnime = true;
                 }
-            } else if (game==="name") {
+            } else if (game==="silueta") {
                 if(randomGame._id === userGame.nameid) {
                     randomGame = await findRandomGame();
                 } else {

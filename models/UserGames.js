@@ -17,11 +17,20 @@ const UserGamesSchema = new Schema({
         ref: 'Game',
         required: true 
     },
+    siluetaid: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'Game',
+        required: true 
+    },
     triesname: {
         type: Number,
         required: true
     },
     triesimage: {
+        type: Number,
+        required: true
+    },
+    triessilueta: {
         type: Number,
         required: true
     },
@@ -37,11 +46,23 @@ const UserGamesSchema = new Schema({
         type: Boolean,
         required: true
     },
+    finishedSilueta: {
+        type: Boolean,
+        required: true
+    },
     statusRewardImage: {
         type: Number,
         required: true
     },
+    statusRewardSilueta: {
+        type: Number,
+        required: true
+    },
     imageSelected: {
+        type: Number,
+        required: false
+    },
+    siluetaSelected: {
         type: Number,
         required: false
     }
