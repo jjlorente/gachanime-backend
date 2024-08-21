@@ -83,8 +83,8 @@ const addNewGamesUser = async (req, res) => {
     }
 }
 
-const updateImageGame = async (req, res) => {
-    const { userid, finishedImage, resets, triesimage, statusRewardImage } = req.body;
+const updateGame = async (req, res) => {
+    const { userid, finished, resets, tries, statusReward, game } = req.body;
     try {
         const userGame = await UserGames.findOne({ userid: userid });
         
@@ -93,10 +93,17 @@ const updateImageGame = async (req, res) => {
         }
 
         if (userGame) {
-            userGame.finishedImage = finishedImage;
+            if (game==="image") {
+                userGame.finishedImage = finished;
+                userGame.triesimage = userGame.triesimage + tries;
+                userGame.statusRewardImage = statusReward;
+            } else if (game==="silueta") {
+                userGame.finishedSilueta = finished;
+                userGame.triessilueta = userGame.triessilueta + tries;
+                userGame.statusRewardSilueta = statusReward;
+            }
+            
             userGame.resets = userGame.resets + resets;
-            userGame.triesimage = userGame.triesimage + triesimage;
-            userGame.statusRewardImage = statusRewardImage;
             await userGame.save();
             res.status(200).json(userGame);
         }
@@ -107,8 +114,8 @@ const updateImageGame = async (req, res) => {
     }
 };
 
-const updateImageSelected = async (req, res) => {
-    const { userid, numImage } = req.body;
+const updateSelected = async (req, res) => {
+    const { userid, num, game } = req.body;
     try {
         const userGame = await UserGames.findOne({ userid: userid });
         
@@ -117,7 +124,11 @@ const updateImageSelected = async (req, res) => {
         }
 
         if (userGame) {
-            userGame.imageSelected = numImage;
+            if(game==="image") {
+                userGame.imageSelected = num;
+            } else if(game==="silueta") {
+                userGame.siluetaSelected = num;
+            }
             await userGame.save();
             res.status(200).json(userGame);
         }
@@ -128,8 +139,8 @@ const updateImageSelected = async (req, res) => {
     }
 };
 
-const updateClaimImageReward = async (req, res) => {
-    const { userid, gachas, status } = req.body;
+const updateClaimReward = async (req, res) => {
+    const { userid, gachas, status, game } = req.body;
     try {
         const userGame = await UserGames.findOne({ userid: userid });
         const userGacha = await Gachas.findOne({ userid: userid });
@@ -139,7 +150,11 @@ const updateClaimImageReward = async (req, res) => {
         }
 
         if (userGame && userGacha) {
-            userGame.statusRewardImage = status;
+            if(game==="image") {
+                userGame.statusRewardImage = status;
+            } else if(game==="silueta") {
+                userGame.statusRewardSilueta = status;
+            }
             userGacha.gachas = userGacha.gachas + gachas;
             await userGame.save();
             await userGacha.save();
@@ -206,4 +221,4 @@ const resetGame = async (req, res) => {
     }
 };
 
-module.exports = { findById, findGameImageById, addNewGamesUser, updateImageGame, updateClaimImageReward, resetGame, updateImageSelected, resetDailyGames };
+module.exports = { findById, findGameImageById, addNewGamesUser, updateGame, updateClaimReward, resetGame, updateSelected, resetDailyGames };
