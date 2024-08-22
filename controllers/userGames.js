@@ -21,6 +21,20 @@ const findById = async (req, res) => {
     }
 };
 
+const findCharactersNames = async (req, res) => {
+
+    try {
+        const games = await Game.find({}, 'names_game');
+        console.log(games)
+        if (!games) {
+            return res.status(404).json({ error: 'Games no encontradas' });
+        }
+        res.status(200).json(games);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
 const findGameImageById = async (req, res) => {
     const { id } = req.query; 
     
@@ -192,7 +206,7 @@ const resetGame = async (req, res) => {
                     differentAnime = true;
                 }
             } else if (game==="silueta") {
-                if(randomGame._id === userGame.nameid) {
+                if(randomGame._id.toString() === userGame.siluetaid.toString()) {
                     randomGame = await findRandomGame();
                 } else {
                     differentAnime = true;
@@ -207,8 +221,8 @@ const resetGame = async (req, res) => {
         if (userGame) {
             if(game === "image") {
                 userGame.imageid = randomGame._id;
-            } else if (game === "name") {
-                userGame.nameid = randomGame._id;
+            } else if (game === "silueta") {
+                userGame.siluetaid = randomGame._id;
             }
             userGame.resets = userGame.resets - 1;
             await userGame.save();
@@ -221,4 +235,4 @@ const resetGame = async (req, res) => {
     }
 };
 
-module.exports = { findById, findGameImageById, addNewGamesUser, updateGame, updateClaimReward, resetGame, updateSelected, resetDailyGames };
+module.exports = { findById, findGameImageById, addNewGamesUser, updateGame, updateClaimReward, resetGame, updateSelected, resetDailyGames, findCharactersNames };

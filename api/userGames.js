@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get("/findById", UserGamesController.findById);
+router.get("/findCharacters", UserGamesController.findCharactersNames);
 router.get("/findGameImageById", UserGamesController.findGameImageById);
 router.post("/create", UserGamesController.addNewGamesUser);
 router.put("/update", UserGamesController.updateGame);
