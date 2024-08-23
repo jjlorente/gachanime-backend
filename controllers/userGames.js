@@ -25,7 +25,6 @@ const findCharactersNames = async (req, res) => {
 
     try {
         const games = await Game.find({}, 'names_game');
-        console.log(games)
         if (!games) {
             return res.status(404).json({ error: 'Games no encontradas' });
         }
