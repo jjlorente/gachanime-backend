@@ -58,11 +58,19 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: true
     },
+    statusRewardName: {
+        type: Number,
+        required: true
+    },
     imageSelected: {
         type: Number,
         required: false
     },
     siluetaSelected: {
+        type: Number,
+        required: false
+    },
+    nameSelected: {
         type: Number,
         required: false
     }

@@ -114,6 +114,10 @@ const updateGame = async (req, res) => {
                 userGame.finishedSilueta = finished;
                 userGame.triessilueta = userGame.triessilueta + tries;
                 userGame.statusRewardSilueta = statusReward;
+            } else if (game==="name") {
+                userGame.finishedName = finished;
+                userGame.triesname = userGame.triesname + tries;
+                userGame.statusRewardName = statusReward;
             }
             
             userGame.resets = userGame.resets + resets;
@@ -141,7 +145,10 @@ const updateSelected = async (req, res) => {
                 userGame.imageSelected = num;
             } else if(game==="silueta") {
                 userGame.siluetaSelected = num;
+            } else if(game==="name") {
+                userGame.nameSelected = num;
             }
+            
             await userGame.save();
             res.status(200).json(userGame);
         }
@@ -210,6 +217,12 @@ const resetGame = async (req, res) => {
                 } else {
                     differentAnime = true;
                 }
+            } else if (game==="name") {
+                if(randomGame._id.toString() === userGame.nameid.toString()) {
+                    randomGame = await findRandomGame();
+                } else {
+                    differentAnime = true;
+                }
             }
         }
 
@@ -222,7 +235,10 @@ const resetGame = async (req, res) => {
                 userGame.imageid = randomGame._id;
             } else if (game === "silueta") {
                 userGame.siluetaid = randomGame._id;
+            } else if (game === "name") {
+                userGame.nameid = randomGame._id;
             }
+
             userGame.resets = userGame.resets - 1;
             await userGame.save();
             res.status(200).json(userGame);
