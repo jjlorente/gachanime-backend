@@ -174,6 +174,8 @@ const updateClaimReward = async (req, res) => {
                 userGame.statusRewardImage = status;
             } else if(game==="silueta") {
                 userGame.statusRewardSilueta = status;
+            } else if(game==="name") {
+                userGame.statusRewardName = status;
             }
             userGacha.gachas = userGacha.gachas + gachas;
             await userGame.save();
@@ -237,6 +239,7 @@ const resetGame = async (req, res) => {
                 userGame.siluetaid = randomGame._id;
             } else if (game === "name") {
                 userGame.nameid = randomGame._id;
+                userGame.triesname = userGame.triesname - userGame.triesname;
             }
 
             userGame.resets = userGame.resets - 1;

@@ -17,6 +17,14 @@ const GameSchema = new Schema({
     silueta_game: [{ 
         type: String, 
         required: true 
+    }],
+    silueta_solution: [{ 
+        type: String, 
+        required: true 
+    }],
+    opening: [{ 
+        type: String, 
+        required: true 
     }]
 });
 
