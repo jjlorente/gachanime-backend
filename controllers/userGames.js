@@ -69,22 +69,27 @@ const addNewGamesUser = async (req, res) => {
         const randomNameGame = await findRandomGame();
         const randomImageGame = await findRandomGame();
         const randomSiluetaGame = await findRandomGame();
+        const randomOpeningGame = await findRandomGame();
 
         let newUserGames = new UserGames({
             userid: userId,
             nameid: randomNameGame._id,
             imageid: randomImageGame._id,
             siluetaid: randomSiluetaGame._id,
+            openingid: randomOpeningGame._id,
             triesname: 0,
             triesimage: 0,
             triessilueta: 0,
+            triesopening: 0,
             resets: 5,
             finishedImage: false,
             finishedName: false,
             finishedSilueta: false,
+            finishedOpening: false,
             statusRewardImage: 0,
             statusRewardSilueta: 0,
-            statusRewardName: 0
+            statusRewardName: 0,
+            statusRewardOpening: 0
         });
 
         const savedUserGames = await newUserGames.save();
@@ -118,6 +123,10 @@ const updateGame = async (req, res) => {
                 userGame.finishedName = finished;
                 userGame.triesname = userGame.triesname + tries;
                 userGame.statusRewardName = statusReward;
+            } else if (game==="opening") {
+                userGame.finishedOpening = finished;
+                userGame.triesopening = userGame.triesopening + tries;
+                userGame.statusRewardOpening = statusReward;
             }
             
             userGame.resets = userGame.resets + resets;
@@ -143,10 +152,12 @@ const updateSelected = async (req, res) => {
         if (userGame) {
             if(game==="image") {
                 userGame.imageSelected = num;
-            } else if(game==="silueta") {
+            } else if (game==="silueta") {
                 userGame.siluetaSelected = num;
-            } else if(game==="name") {
+            } else if (game==="name") {
                 userGame.nameSelected = num;
+            } else if (game==="opening") {
+                userGame.openingSelected = num;
             }
             
             await userGame.save();
@@ -170,13 +181,16 @@ const updateClaimReward = async (req, res) => {
         }
 
         if (userGame && userGacha) {
-            if(game==="image") {
+            if (game==="image") {
                 userGame.statusRewardImage = status;
-            } else if(game==="silueta") {
+            } else if (game==="silueta") {
                 userGame.statusRewardSilueta = status;
-            } else if(game==="name") {
+            } else if (game==="name") {
                 userGame.statusRewardName = status;
+            } else if (game==="opening") {
+                userGame.statusRewardOpening = status;
             }
+
             userGacha.gachas = userGacha.gachas + gachas;
             await userGame.save();
             await userGacha.save();
@@ -207,7 +221,7 @@ const resetGame = async (req, res) => {
         let differentAnime = false;
 
         while(differentAnime === false) {
-            if(game === "image") {
+            if (game === "image") {
                 if(randomGame._id.toString() === userGame.imageid.toString()) {
                     randomGame = await findRandomGame();
                 } else {
@@ -221,6 +235,12 @@ const resetGame = async (req, res) => {
                 }
             } else if (game==="name") {
                 if(randomGame._id.toString() === userGame.nameid.toString()) {
+                    randomGame = await findRandomGame();
+                } else {
+                    differentAnime = true;
+                }
+            } else if (game==="opening") {
+                if(randomGame._id.toString() === userGame.openingid.toString()) {
                     randomGame = await findRandomGame();
                 } else {
                     differentAnime = true;
@@ -240,6 +260,8 @@ const resetGame = async (req, res) => {
             } else if (game === "name") {
                 userGame.nameid = randomGame._id;
                 userGame.triesname = userGame.triesname - userGame.triesname;
+            } else if (game === "opening") {
+                userGame.openingid = randomGame._id;
             }
 
             userGame.resets = userGame.resets - 1;

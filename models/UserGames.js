@@ -22,11 +22,20 @@ const UserGamesSchema = new Schema({
         ref: 'Game',
         required: true 
     },
+    openingid: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'Game',
+        required: true 
+    },
     triesname: {
         type: Number,
         required: true
     },
     triesimage: {
+        type: Number,
+        required: true
+    },
+    triesopening: {
         type: Number,
         required: true
     },
@@ -50,6 +59,10 @@ const UserGamesSchema = new Schema({
         type: Boolean,
         required: true
     },
+    finishedOpening: {
+        type: Boolean,
+        required: true
+    },
     statusRewardImage: {
         type: Number,
         required: true
@@ -62,6 +75,10 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: true
     },
+    statusRewardOpening: {
+        type: Number,
+        required: true
+    },
     imageSelected: {
         type: Number,
         required: false
@@ -71,6 +88,10 @@ const UserGamesSchema = new Schema({
         required: false
     },
     nameSelected: {
+        type: Number,
+        required: false
+    },
+    openingSelected: {
         type: Number,
         required: false
     }
