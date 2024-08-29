@@ -31,12 +31,14 @@ const Gachas = require('./api/gachas');
 const Cards = require('./api/cards');
 const UserCards = require('./api/userCards');
 const UserGames = require('./api/userGames');
+const UserQuests = require('./api/userQuests');
 
 app.use('/api/gachas', Gachas);
 app.use('/api/cards', Cards);
 app.use('/api/users', Users);
 app.use('/api/userCards', UserCards);
 app.use('/api/userGames', UserGames);
+app.use('/api/userQuests', UserGames);
 
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK' }).end();

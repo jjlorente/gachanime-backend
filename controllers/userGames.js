@@ -64,12 +64,29 @@ const findRandomGame = async () => {
 
 const addNewGamesUser = async (req, res) => {
     const { userId  } = req.body;
+    const userGames = await UserGames.findOne({ userid: userId });
+    if (userGames) {
+        res.status(200).json({ message: "UserGames already exists" });
+    }
 
     try {
+        
         const randomNameGame = await findRandomGame();
+        const lengthName = randomNameGame.names_game.length - 1;
+
         const randomImageGame = await findRandomGame();
+        const lengthImage = randomImageGame.image_game.length - 1;
+
         const randomSiluetaGame = await findRandomGame();
+        const lengthSilueta = randomSiluetaGame.silueta_game.length - 1;
+
         const randomOpeningGame = await findRandomGame();
+        const lengthOpening = randomOpeningGame.opening.length - 1;
+
+        const randomIndexOpening = Math.floor(Math.random() * lengthOpening);
+        const randomIndexName = Math.floor(Math.random() * lengthName);
+        const randomIndexImage = Math.floor(Math.random() * lengthImage);
+        const randomIndexSilueta = Math.floor(Math.random() * lengthSilueta);
 
         let newUserGames = new UserGames({
             userid: userId,
@@ -81,7 +98,7 @@ const addNewGamesUser = async (req, res) => {
             triesimage: 0,
             triessilueta: 0,
             triesopening: 0,
-            resets: 5,
+            resets: 10,
             finishedImage: false,
             finishedName: false,
             finishedSilueta: false,
@@ -89,7 +106,11 @@ const addNewGamesUser = async (req, res) => {
             statusRewardImage: 0,
             statusRewardSilueta: 0,
             statusRewardName: 0,
-            statusRewardOpening: 0
+            statusRewardOpening: 0,
+            imageSelected: randomIndexImage,
+            nameSelected: randomIndexName,
+            siluetaSelected: randomIndexSilueta,
+            openingSelected: randomIndexOpening
         });
 
         const savedUserGames = await newUserGames.save();
@@ -141,23 +162,30 @@ const updateGame = async (req, res) => {
 };
 
 const updateSelected = async (req, res) => {
-    const { userid, num, game } = req.body;
+    const { userid, game } = req.body;
     try {
         const userGame = await UserGames.findOne({ userid: userid });
         
         if (!userGame) {
             return res.status(404).json({ error: 'UserGame no encontrado' });
         }
-
         if (userGame) {
             if(game==="image") {
-                userGame.imageSelected = num;
+                const game = await Game.findOne({ _id: userGame.imageid });
+                const randomIndex = Math.floor(Math.random() * (game.image_game.length-1));
+                userGame.imageSelected = randomIndex;
             } else if (game==="silueta") {
-                userGame.siluetaSelected = num;
+                const game = await Game.findOne({ _id: userGame.siluetaid });
+                const randomIndex = Math.floor(Math.random() * (game.silueta_game.length-1));
+                userGame.siluetaSelected = randomIndex;
             } else if (game==="name") {
-                userGame.nameSelected = num;
+                const game = await Game.findOne({ _id: userGame.nameid });
+                const randomIndex = Math.floor(Math.random() * (game.names_game.length-1));
+                userGame.nameSelected = randomIndex;
             } else if (game==="opening") {
-                userGame.openingSelected = num;
+                const game = await Game.findOne({ _id: userGame.openingid });
+                const randomIndex = Math.floor(Math.random() * (game.opening.length-1));
+                userGame.openingSelected = randomIndex;
             }
             
             await userGame.save();
@@ -263,8 +291,9 @@ const resetGame = async (req, res) => {
             } else if (game === "opening") {
                 userGame.openingid = randomGame._id;
             }
-
-            userGame.resets = userGame.resets - 1;
+            if(userGame.resets>0) {
+                userGame.resets = userGame.resets - 1;
+            }
             await userGame.save();
             res.status(200).json(userGame);
         }
