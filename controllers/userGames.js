@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const UserGames = require("../models/UserGames");
 const Game = require("../models/Game");
 const Gachas = require("../models/Gacha");
+const UserQuests = require("../models/UserQuest");
 
 const findById = async (req, res) => {
     const { id } = req.query; 
@@ -130,26 +131,54 @@ const updateGame = async (req, res) => {
         if (!userGame) {
             return res.status(404).json({ error: 'UserGame no encontrado' });
         }
-
+        let userQuest = undefined;
         if (userGame) {
             if (game==="image") {
                 userGame.finishedImage = finished;
                 userGame.triesimage = userGame.triesimage + tries;
                 userGame.statusRewardImage = statusReward;
+
+                if(statusReward === 1) {
+                    userQuest = await UserQuests.findOne({ userid: userid });
+                    userQuest.statusQuestImage = 1;
+                    userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
+                }
+
             } else if (game==="silueta") {
                 userGame.finishedSilueta = finished;
                 userGame.triessilueta = userGame.triessilueta + tries;
                 userGame.statusRewardSilueta = statusReward;
+
+                if(statusReward === 1) {
+                    userQuest = await UserQuests.findOne({ userid: userid });
+                    userQuest.statusQuestSilueta = 1;
+                    userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
+                }
+
             } else if (game==="name") {
                 userGame.finishedName = finished;
                 userGame.triesname = userGame.triesname + tries;
                 userGame.statusRewardName = statusReward;
+                if(statusReward === 1) {
+                    userQuest = await UserQuests.findOne({ userid: userid });
+                    userQuest.statusQuestName = 1;
+                    userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
+                }
             } else if (game==="opening") {
                 userGame.finishedOpening = finished;
                 userGame.triesopening = userGame.triesopening + tries;
                 userGame.statusRewardOpening = statusReward;
+                if(statusReward === 1) {
+                    userQuest = await UserQuests.findOne({ userid: userid });
+                    userQuest.statusQuestOpening = 1;
+                    userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
+                }
             }
-            
+
+            if(userQuest) {
+                await userQuest.save();
+            }
+
             userGame.resets = userGame.resets + resets;
             await userGame.save();
             res.status(200).json(userGame);
@@ -234,6 +263,7 @@ const updateClaimReward = async (req, res) => {
 const resetDailyGames = async (req, res) => {
     try {
         await UserGames.deleteMany({});
+        await UserQuests.deleteMany({});
         res.status(200).json("Reset");
     } catch (err) {
         console.error('Error deleting documents:', err);

@@ -38,7 +38,7 @@ app.use('/api/cards', Cards);
 app.use('/api/users', Users);
 app.use('/api/userCards', UserCards);
 app.use('/api/userGames', UserGames);
-app.use('/api/userQuests', UserGames);
+app.use('/api/userQuests', UserQuests);
 
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK' }).end();
