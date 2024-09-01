@@ -263,7 +263,12 @@ const updateClaimReward = async (req, res) => {
 const resetDailyGames = async (req, res) => {
     try {
         await UserGames.deleteMany({});
-        await UserQuests.deleteMany({});
+        await UserQuests.updateMany({}, { $set: { statusQuestImage: 0 } });
+        await UserQuests.updateMany({}, { $set: { statusQuestName: 0 } });
+        await UserQuests.updateMany({}, { $set: { statusQuestSilueta: 0 } });
+        await UserQuests.updateMany({}, { $set: { statusQuestOpening: 0 } });
+        await UserQuests.updateMany({}, { $set: { statusQuestAllGames: 0 } });
+
         res.status(200).json("Reset");
     } catch (err) {
         console.error('Error deleting documents:', err);

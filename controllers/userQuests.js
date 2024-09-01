@@ -36,6 +36,38 @@ const findAllQuests = async (req, res) => {
     }
 };
 
+const weekQuests = async (req, res) => {
+    const { userid, numWeek, login, summon } = req.body;
+    const userQuests = await UserQuests.findOne({ userid: userid });
+
+    try {
+        if (!userQuests) {
+            return res.status(404).json({ error: 'userQuests no encontrado o gacha' });
+        }
+
+        if (userQuests.statusWeek + numWeek === 7) {
+            userQuests.statusWeek = 0;
+            userQuests.statusSummonsWeek = 0;
+            userQuests.statusLogInWeek = 1;
+        } else {
+            if(numWeek) {
+                userQuests.statusWeek += numWeek;
+            }
+            if(login && userQuests.statusLogInWeek < 7) {
+                userQuests.statusLogInWeek += login;
+            }
+            if(summon && userQuests.statusSummonsWeek < 10) {
+                userQuests.statusSummonsWeek += summon;
+            }
+        }
+
+        await userQuests.save();
+        res.status(200).json("Status updated or reset successfully");
+    } catch (err) {
+        console.error('Error updating document:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
 
 const addNewQuestsUser = async (req, res) => {
     const { userId  } = req.body;
@@ -47,7 +79,10 @@ const addNewQuestsUser = async (req, res) => {
             statusQuestSilueta: 0,
             statusQuestName: 0,
             statusQuestOpening: 0,
-            statusQuestAllGames: 0
+            statusQuestAllGames: 0,
+            statusWeek: 0,
+            statusSummonsWeek: 0,
+            statusLogInWeek: 1
         });
 
         const savedUserQuests = await newUserQuests.save();
@@ -80,7 +115,11 @@ const updateClaimReward = async (req, res) => {
                 userQuest.statusQuestOpening = 2;
             } else if (game==="all") {
                 userQuest.statusQuestAllGames = 5;
-            } 
+            } else if (game==="summon") {
+                userQuest.statusSummonsWeek = 11;
+            } else if (game==="log") {
+                userQuest.statusLogInWeek = 8;
+            }
 
             userGacha.gachas = userGacha.gachas + gachas;
             await userQuest.save();
@@ -94,4 +133,4 @@ const updateClaimReward = async (req, res) => {
     }
 };
 
-module.exports = { findById, addNewQuestsUser, findAllQuests, updateClaimReward };
+module.exports = { findById, addNewQuestsUser, findAllQuests, updateClaimReward, weekQuests };

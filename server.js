@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const cron = require('node-cron');
 
 const UserGamesCollection = require('./models/UserGames'); 
+const Day = require('./models/Day'); 
 
 const app = express();
 app.use(helmet({
@@ -32,10 +33,12 @@ const Cards = require('./api/cards');
 const UserCards = require('./api/userCards');
 const UserGames = require('./api/userGames');
 const UserQuests = require('./api/userQuests');
+const Days = require('./api/days');
 
 app.use('/api/gachas', Gachas);
 app.use('/api/cards', Cards);
 app.use('/api/users', Users);
+app.use('/api/day', Days);
 app.use('/api/userCards', UserCards);
 app.use('/api/userGames', UserGames);
 app.use('/api/userQuests', UserQuests);
@@ -50,18 +53,48 @@ mongoose.connect('mongodb://127.0.0.1:27017/gachanime', { useNewUrlParser: true,
         server.listen(PORT, () => {
             console.log(`Servidor en ejecución en http://localhost:${PORT}`);
         });
+        createOrUpdateDay();
     })
     .catch((error) => {
         console.error('Error al conectar a MongoDB:', error.message);
     });
 
-cron.schedule('00 00 * * *', async () => {
-    try {
-        await UserGamesCollection.deleteMany({});
-        console.log('All documents deleted from UserGames collection');
-    } catch (err) {
-        console.error('Error deleting documents:', err);
-    }
+    const createOrUpdateDay = async () => {
+        try {
+            let dayDoc = await Day.findOne({});
+    
+            if (!dayDoc) {
+                dayDoc = new Day();
+                await dayDoc.save();
+                console.log('Documento Day creado:', dayDoc);
+            } else {
+                console.log('Documento Day ya existe:', dayDoc);
+            }
+    
+            return dayDoc;
+        } catch (err) {
+            console.error('Error al crear o actualizar el documento Day:', err);
+        }
+    };
+ 
+    const resetDaily = async () => {
+        try {
+            const now = new Date();
+            now = `${now.getFullYear()},${now.getMonth() + 1},${now.getDate()}`;
+            await Day.updateMany({}, { $set: { lastReset: now } });
+        } catch (err) {
+            console.error('Error actualizando el campo lastReset:', err);
+        }
+    };
+
+    cron.schedule('00 00 * * *', async () => {
+        try {
+            await UserGamesCollection.deleteMany({});
+            //await resetDaily();
+            console.log('Todos los documentos eliminados de la colección UserGames');
+        } catch (err) {
+            console.error('Error eliminando documentos:', err);
+        }
     });
 
 

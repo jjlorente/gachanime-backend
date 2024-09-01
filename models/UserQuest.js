@@ -26,6 +26,18 @@ const UserQuestSchema = new Schema({
     statusQuestAllGames: {
         type: Number,
         required: true
+    },
+    statusWeek: {
+        type: Number,
+        required: true
+    },
+    statusSummonsWeek: {
+        type: Number,
+        required: true
+    },
+    statusLogInWeek: {
+        type: Number,
+        required: true
     }
 });
 
