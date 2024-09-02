@@ -3,6 +3,7 @@ const UserQuests = require("../models/UserQuest");
 const Quest = require("../models/Quest");
 const UserGames = require("../models/UserGames");
 const Gachas = require("../models/Gacha");
+const Day = require("../models/Day");
 
 const findById = async (req, res) => {
     const { id } = req.query; 
@@ -45,21 +46,16 @@ const weekQuests = async (req, res) => {
             return res.status(404).json({ error: 'userQuests no encontrado o gacha' });
         }
 
-        if (userQuests.statusWeek + numWeek === 7) {
-            userQuests.statusWeek = 0;
-            userQuests.statusSummonsWeek = 0;
-            userQuests.statusLogInWeek = 1;
-        } else {
-            if(numWeek) {
-                userQuests.statusWeek += numWeek;
-            }
-            if(login && userQuests.statusLogInWeek < 7) {
-                userQuests.statusLogInWeek += login;
-            }
-            if(summon && userQuests.statusSummonsWeek < 10) {
-                userQuests.statusSummonsWeek += summon;
-            }
+        if(numWeek) {
+            userQuests.statusWeek += numWeek;
         }
+        if(login && userQuests.statusLogInWeek < 7) {
+            userQuests.statusLogInWeek += login;
+        }
+        if(summon && userQuests.statusSummonsWeek < 10) {
+            userQuests.statusSummonsWeek += summon;
+        }
+        
 
         await userQuests.save();
         res.status(200).json("Status updated or reset successfully");
