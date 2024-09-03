@@ -34,6 +34,7 @@ const UserCards = require('./api/userCards');
 const UserGames = require('./api/userGames');
 const UserQuests = require('./api/userQuests');
 const Days = require('./api/days');
+const Surveys = require('./api/surveys');
 
 app.use('/api/gachas', Gachas);
 app.use('/api/cards', Cards);
@@ -42,6 +43,7 @@ app.use('/api/day', Days);
 app.use('/api/userCards', UserCards);
 app.use('/api/userGames', UserGames);
 app.use('/api/userQuests', UserQuests);
+app.use('/api/surveys', Surveys);
 
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK' }).end();
