@@ -78,6 +78,38 @@ const findByGoogleAccount = async (req, res) => {
     }
 };
 
+const updateLevel = async (req, res) => {
+    const { userid, exp } = req.body;
+    const user = await User.findOne({ _id: userid });
+
+    try {
+        if (!user) {
+            return res.status(404).json({ error: 'user no encontrado' });
+        }
+
+        if(exp) {
+            let experience = user.profileExp + exp;
+            if(experience > user.profileExpNextLevel) {
+                user.profileLevel = user.profileLevel + 1;
+                experience = experience % user.profileExpNextLevel;
+                user.profileExp = experience;
+                user.profileExpNextLevel = user.profileExpNextLevel + 10;
+            } else if (experience === user.profileExpNextLevel) {
+                user.profileLevel = user.profileLevel + 1;
+                user.profileExp = 0;
+                user.profileExpNextLevel = user.profileExpNextLevel + 10;
+            } else {
+                user.profileExp = experience;
+            }
+        }
+
+        await user.save();
+        res.status(200).json("user updated successfully");
+    } catch (err) {
+        console.error('Error updating document:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
 
 const addUser = async (req, res) => {
     const { username, password, email  } = req.body;
@@ -113,7 +145,7 @@ const addUser = async (req, res) => {
     }
 }
 
-module.exports = { findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById };
+module.exports = { findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel };
 
 // const updateUser = (req, res) => {
 //     const userId = req.params.id;

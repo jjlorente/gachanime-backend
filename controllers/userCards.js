@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const UserCard = require("../models/UserCard");
+const Card = require("../models/Card");
 
 const findById = async (req, res) => {
     const { id } = req.query; 
@@ -18,6 +19,35 @@ const findById = async (req, res) => {
         res.status(500).send(err.message);
     }
 };
+
+const calculateTotalPower = async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'ID is required' });
+  }
+
+  try {
+    const userCards = await UserCard.findOne({ userid: userId });
+    if (!userCards) {
+      return res.status(404).json({ error: 'Cards not found' });
+    }
+
+    let totalPower = 0;
+
+    for (const cardId of userCards.cards) {
+      const card = await Card.findOne({ _id: cardId });
+      if (card) {
+        totalPower = totalPower + card.power;
+      }
+    }
+
+    res.status(200).json({ totalPower });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
 
 const addUserCard = async (req, res) => {
     const { userId  } = req.body;
@@ -57,4 +87,4 @@ const addCardsToUser = async (userId, newCards) => {
 };
 
 
-module.exports = { findById, addCardsToUser, addUserCard };
+module.exports = { findById, addCardsToUser, addUserCard, calculateTotalPower };
