@@ -8,6 +8,8 @@ router.get("/", UserController.findAllUsers);
 // router.put("/:id", UserController.updateUser);
 router.get("/findById", UserController.findById);
 router.put("/updateLevel", UserController.updateLevel);
+router.put("/updateUser", UserController.updateUser);
+router.put("/updateUserLan", UserController.updateUserLan);
 router.post("/find", UserController.findByUsernameAndPassword);
 router.post("/findGoogle", UserController.findByGoogleAccount);
 router.post("/create", UserController.addUser);

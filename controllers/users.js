@@ -111,6 +111,78 @@ const updateLevel = async (req, res) => {
     }
 };
 
+const getImageSizeInBytes = (base64String) => {
+    let padding = 0;
+    if (base64String.endsWith('==')) padding = 2;
+    else if (base64String.endsWith('=')) padding = 1;
+    
+    const base64Length = base64String.length;
+    const sizeInBytes = (base64Length * 3) / 4 - padding;
+
+    return sizeInBytes;
+};
+
+const updateUserLan = async (req, res) => {
+    const { userid, lan } = req.body;
+    const user = await User.findOne({ _id: userid });
+
+    try {
+        if (!user) {
+            return res.status(404).json({ error: 'user no encontrado' });
+        }
+
+        if(lan) {
+            user.codeLan = lan;
+        }
+
+        await user.save();
+        res.status(200).json(user);
+    } catch (err) {
+        console.error('Error updating document:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+const updateUser = async (req, res) => {
+    const { userid, picture, username, sound } = req.body;
+    const user = await User.findOne({ _id: userid });
+
+    try {
+        if (!user) {
+            return res.status(404).json({ error: 'user no encontrado' });
+        }
+
+        if(picture) {
+            const maxFileSize = 10 * 1024 * 1024;
+            const sizeInBytes = getImageSizeInBytes(picture);
+
+            if (sizeInBytes > maxFileSize) {
+                return res.status(400).json({ error: 'La imagen supera los 10 MB permitidos.' });
+            }
+
+            user.profilePicture = picture;
+        }
+
+        if(username !== "") {
+            const usernameExists = await User.findOne({ username });
+            if(usernameExists) {
+                return res.status(400).json({ error: 'Username already taken' });
+            }
+            user.username = username;
+        }
+
+        if(sound) {
+            // console.log(sound)
+        }
+
+        await user.save();
+        res.status(200).json(user);
+    } catch (err) {
+        console.error('Error updating document:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 const addUser = async (req, res) => {
     const { username, password, email  } = req.body;
     try {
@@ -145,30 +217,4 @@ const addUser = async (req, res) => {
     }
 }
 
-module.exports = { findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel };
-
-// const updateUser = (req, res) => {
-//     const userId = req.params.id;
-  
-//     User.findByIdAndUpdate(
-//       userId,
-//       {
-//         name: req.body.name,
-//         age: req.body.age,
-//         gender: req.body.gender,
-//         sexuality: req.body.sexuality,
-//         ageRange: req.body.ageRange
-//       },
-//       { new: true }
-//     )
-//       .then(updatedUser => {
-//         if (!updatedUser) {
-//           return res.status(404).json({ error: 'Usuario no encontrado' });
-//         }
-//         res.status(200).json(updatedUser);
-//       })
-//       .catch(error => {
-//         console.error('Error al actualizar el usuario:', error);
-//         res.status(500).json({ error: 'Error interno del servidor' });
-//       });
-// };
+module.exports = { findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan };
