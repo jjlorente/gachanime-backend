@@ -38,6 +38,23 @@ const addVote = async (req, res) => {
     }
 };
 
+const finishedPoll = async (req, res) => {
 
+    try {
+        let survey = await Survey.findOne({});
 
-module.exports = { find, addVote };
+        if (!survey) {
+            return res.status(404).json({ error: 'Survey no encontrado' });
+        }
+
+        survey.finished = true
+
+        await survey.save();
+        return res.status(200).json(survey);
+    } catch (err) {
+        console.error('Error al añadir voto:', err.message);
+        return res.status(500).json({ error: 'Error al añadir voto' });
+    }
+};
+
+module.exports = { find, addVote, finishedPoll };

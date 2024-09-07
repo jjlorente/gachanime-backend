@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const UserCard = require("../models/UserCard");
 const Card = require("../models/Card");
+const UserQuests = require("../models/UserQuest");
+const { updateLevel } = require("./users");
 
 const findById = async (req, res) => {
     const { id } = req.query; 
@@ -28,18 +30,35 @@ const calculateTotalPower = async (req, res) => {
   }
 
   try {
-    const userCards = await UserCard.findOne({ userid: userId });
+    const [userCards, userQuest] = await Promise.all([
+      UserCard.findOne({ userid: userId }),
+      UserQuests.findOne({ userid: userId })
+    ]);
+
     if (!userCards) {
       return res.status(404).json({ error: 'Cards not found' });
     }
 
-    let totalPower = 0;
+    const cardsData = await Card.find({ _id: { $in: userCards.cards } });
 
+    const cardPowerMap = new Map(cardsData.map(card => [card._id.toString(), card.power]));
+
+    let totalPower = 0;
     for (const cardId of userCards.cards) {
-      const card = await Card.findOne({ _id: cardId });
-      if (card) {
-        totalPower = totalPower + card.power;
+      const cardPower = cardPowerMap.get(cardId.toString());
+      if (cardPower) {
+        totalPower += cardPower;
       }
+    }
+
+    if (totalPower >= 150000 && userQuest && userQuest.statusPower1 < 1) {
+      userQuest.statusPower1 = 1;
+      await userQuest.save();
+    }
+
+    if (totalPower >= 500000 && userQuest && userQuest.statusPower10 < 1) {
+      userQuest.statusPower10 = 1;
+      await userQuest.save();
     }
 
     res.status(200).json({ totalPower });
@@ -47,6 +66,8 @@ const calculateTotalPower = async (req, res) => {
     res.status(500).send(err.message);
   }
 };
+
+
 
 
 const addUserCard = async (req, res) => {

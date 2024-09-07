@@ -38,6 +38,22 @@ const UserQuestSchema = new Schema({
     statusLogInWeek: {
         type: Number,
         required: true
+    },
+    statusLevel5: {
+        type: Number,
+        required: true
+    },
+    statusLevel20: {
+        type: Number,
+        required: true
+    },
+    statusPower1: {
+        type: Number,
+        required: true
+    },
+    statusPower10: {
+        type: Number,
+        required: true
     }
 });
 

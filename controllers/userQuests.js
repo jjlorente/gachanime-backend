@@ -78,7 +78,11 @@ const addNewQuestsUser = async (req, res) => {
             statusQuestAllGames: 0,
             statusWeek: 0,
             statusSummonsWeek: 0,
-            statusLogInWeek: 1
+            statusLogInWeek: 1,
+            statusLevel5: 0,
+            statusPower1: 0,
+            statusLevel20: 0,
+            statusPower10: 0
         });
 
         const savedUserQuests = await newUserQuests.save();
@@ -115,6 +119,14 @@ const updateClaimReward = async (req, res) => {
                 userQuest.statusSummonsWeek = 11;
             } else if (game==="log") {
                 userQuest.statusLogInWeek = 8;
+            } else if (game==="power") {
+                userQuest.statusPower1 = 2;
+            } else if (game==="power1") {
+                userQuest.statusPower10 = 2;
+            } else if (game==="level") {
+                userQuest.statusLevel5 = 2;
+            } else if (game==="level1") {
+                userQuest.statusLevel20 = 2;
             }
 
             userGacha.gachas = userGacha.gachas + gachas;

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
 const User = require("../models/User");
+const UserQuests = require("../models/UserQuest");
 
 const findAllUsers = async (req, res) => {
     try {
@@ -81,6 +82,7 @@ const findByGoogleAccount = async (req, res) => {
 const updateLevel = async (req, res) => {
     const { userid, exp } = req.body;
     const user = await User.findOne({ _id: userid });
+    const userQuest = await UserQuests.findOne({ userid: userid });
 
     try {
         if (!user) {
@@ -101,6 +103,16 @@ const updateLevel = async (req, res) => {
             } else {
                 user.profileExp = experience;
             }
+        }
+
+        if(user.profileLevel >= 5 && userQuest.statusLevel5 < 1) {
+            userQuest.statusLevel5 = 1
+            await userQuest.save();
+        }
+
+        if(user.profileLevel >= 20 && userQuest.statusLevel20 < 1) {
+            userQuest.statusLevel20 = 1
+            await userQuest.save();
         }
 
         await user.save();
@@ -169,10 +181,6 @@ const updateUser = async (req, res) => {
                 return res.status(400).json({ error: 'Username already taken' });
             }
             user.username = username;
-        }
-
-        if(sound) {
-            // console.log(sound)
         }
 
         await user.save();
