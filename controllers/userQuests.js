@@ -114,7 +114,7 @@ const updateClaimReward = async (req, res) => {
             } else if (game==="opening") {
                 userQuest.statusQuestOpening = 2;
             } else if (game==="all") {
-                userQuest.statusQuestAllGames = 5;
+                userQuest.statusQuestAllGames = 6;
             } else if (game==="summon") {
                 userQuest.statusSummonsWeek = 11;
             } else if (game==="log") {

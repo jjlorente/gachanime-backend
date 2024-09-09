@@ -84,10 +84,14 @@ const addNewGamesUser = async (req, res) => {
         const randomOpeningGame = await findRandomGame();
         const lengthOpening = randomOpeningGame.opening.length - 1;
 
+        const randomEyeGame = await findRandomGame();
+        const lengthEye = randomEyeGame.eye_game.length - 1;
+
         const randomIndexOpening = Math.floor(Math.random() * lengthOpening);
         const randomIndexName = Math.floor(Math.random() * lengthName);
         const randomIndexImage = Math.floor(Math.random() * lengthImage);
         const randomIndexSilueta = Math.floor(Math.random() * lengthSilueta);
+        const randomIndexEye = Math.floor(Math.random() * lengthEye);
 
         let newUserGames = new UserGames({
             userid: userId,
@@ -95,23 +99,28 @@ const addNewGamesUser = async (req, res) => {
             imageid: randomImageGame._id,
             siluetaid: randomSiluetaGame._id,
             openingid: randomOpeningGame._id,
+            eyeid: randomEyeGame._id,
             triesname: 0,
             triesimage: 0,
             triessilueta: 0,
             triesopening: 0,
+            trieseye: 0,
             resets: 10,
             finishedImage: false,
             finishedName: false,
             finishedSilueta: false,
             finishedOpening: false,
+            finishedEye: false,
             statusRewardImage: 0,
             statusRewardSilueta: 0,
             statusRewardName: 0,
             statusRewardOpening: 0,
+            statusRewardEye: 0,
             imageSelected: randomIndexImage,
             nameSelected: randomIndexName,
             siluetaSelected: randomIndexSilueta,
-            openingSelected: randomIndexOpening
+            openingSelected: randomIndexOpening,
+            eyeSelected: randomIndexEye
         });
 
         const savedUserGames = await newUserGames.save();
@@ -152,6 +161,17 @@ const updateGame = async (req, res) => {
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
                     userQuest.statusQuestSilueta = 1;
+                    userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
+                }
+
+            } else if (game==="eye") {
+                userGame.finishedEye = finished;
+                userGame.trieseye = userGame.trieseye + tries;
+                userGame.statusRewardEye = statusReward;
+
+                if(statusReward === 1) {
+                    userQuest = await UserQuests.findOne({ userid: userid });
+                    userQuest.statusRewardEye = 1;
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
 
@@ -215,6 +235,10 @@ const updateSelected = async (req, res) => {
                 const game = await Game.findOne({ _id: userGame.openingid });
                 const randomIndex = Math.floor(Math.random() * (game.opening.length-1));
                 userGame.openingSelected = randomIndex;
+            } else if (game==="eye") {
+                const game = await Game.findOne({ _id: userGame.eyeid });
+                const randomIndex = Math.floor(Math.random() * (game.eye_game.length-1));
+                userGame.eyeSelected = randomIndex;
             }
             
             await userGame.save();
@@ -246,6 +270,8 @@ const updateClaimReward = async (req, res) => {
                 userGame.statusRewardName = status;
             } else if (game==="opening") {
                 userGame.statusRewardOpening = status;
+            } else if (game==="eye") {
+                userGame.statusRewardEye = status;
             }
 
             userGacha.gachas = userGacha.gachas + gachas;
@@ -308,6 +334,12 @@ const resetGame = async (req, res) => {
                 } else {
                     differentAnime = true;
                 }
+            } else if (game==="eye") {
+                if(randomGame._id.toString() === userGame.eyeid.toString()) {
+                    randomGame = await findRandomGame();
+                } else {
+                    differentAnime = true;
+                }
             }
         }
 
@@ -325,10 +357,14 @@ const resetGame = async (req, res) => {
                 userGame.triesname = userGame.triesname - userGame.triesname;
             } else if (game === "opening") {
                 userGame.openingid = randomGame._id;
+            } else if (game === "eye") {
+                userGame.eyeid = randomGame._id;
             }
+
             if(userGame.resets>0) {
                 userGame.resets = userGame.resets - 1;
             }
+
             await userGame.save();
             res.status(200).json(userGame);
         }

@@ -25,7 +25,15 @@ const GameSchema = new Schema({
     opening: [{ 
         type: String, 
         required: true 
-    }]
+    }],
+    eye_game: [{ 
+        type: String, 
+        required: true 
+    }],
+    eye_solution: [{ 
+        type: String, 
+        required: true 
+    }],
 });
 
 module.exports = Game = mongoose.model('Game', GameSchema);
