@@ -64,6 +64,7 @@ const getDataMarket = async (req, res) => {
             }
 
             if(marketData.length > 0) {
+                marketData.reverse();
                 res.status(201).json(marketData);
             }
         } else {
