@@ -6,6 +6,10 @@ const UserSchema = new Schema({
     password: { type: String, required: false },
     email: { type: String, required: true },
     googleAccount: { type: Boolean, required: true },
+    totalPower: { 
+        type: Number, 
+        default: 0
+    },
     profileLevel: { 
         type: Number, 
         default: 1

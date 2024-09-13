@@ -225,4 +225,43 @@ const addUser = async (req, res) => {
     }
 }
 
-module.exports = { findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan };
+const updatePower = async (req, res) => {
+    const { userid, power } = req.body;
+    const user = await User.findOne({ _id: userid });
+    try {
+        if (!user) {
+            return res.status(404).json({ error: 'user no encontrado' });
+        }
+
+        if(power.totalPower && power.totalPower > user.totalPower) {
+            user.totalPower = power.totalPower;
+        }
+
+        await user.save();
+        res.status(200).json("totalPower user updated successfully");
+    } catch (err) {
+        console.error('Error updating document:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+const getRanking = async (req, res) => {
+    try {
+        // Obtener los 100 usuarios con el totalPower más alto, ordenados de mayor a menor
+        const topTotalPowerUsers = await User.find().sort({ totalPower: -1 }).limit(100);
+        
+        // Obtener los 100 usuarios con el level más alto, ordenados de mayor a menor
+        const topLevelUsers = await User.find().sort({ level: -1 }).limit(100);
+        
+        // Devolver los rankings
+        res.status(200).json({
+            topTotalPowerUsers,
+            topLevelUsers
+        });
+    } catch (err) {
+        console.error('Error fetching rankings:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+module.exports = { getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan };
