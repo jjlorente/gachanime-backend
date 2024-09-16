@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
 const User = require("../models/User");
 const UserQuests = require("../models/UserQuest");
+const UserCard = require("../models/UserCard");
+const Card = require("../models/Card");
 
 const findAllUsers = async (req, res) => {
     try {
@@ -247,21 +249,68 @@ const updatePower = async (req, res) => {
 
 const getRanking = async (req, res) => {
     try {
-        // Obtener los 100 usuarios con el totalPower más alto, ordenados de mayor a menor
         const topTotalPowerUsers = await User.find().sort({ totalPower: -1 }).limit(100);
         
-        // Obtener los 100 usuarios con el level más alto, ordenados de mayor a menor
-        const topLevelUsers = await User.find().sort({ level: -1 }).limit(100);
+        const topLevelUsers = await User.find().sort({ profileLevel: -1 }).limit(100);
+
+        const totalCards = await Card.find().count();
+
+        const topCollection = await UserCard.aggregate([
+            {
+                $unwind: '$cards'
+            },
+            {
+                $group: {
+                    _id: '$userid',
+                    uniqueCards: { $addToSet: '$cards' } 
+                }
+            },
+            {
+                $addFields: {
+                    totalUniqueCards: { $size: '$uniqueCards' }
+                }
+            },
+            {
+                $sort: { totalUniqueCards: -1 }
+            },
+            {
+                $limit: 100
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: '_id',
+                    foreignField: '_id', 
+                    as: 'userDetails'
+                }
+            },
+            {
+                $unwind: '$userDetails'
+            },
+            {
+                $project: {
+                    _id: 0,
+                    totalUniqueCards: 1,
+                    'userDetails.username': 1,
+                    'userDetails.profileLevel': 1,
+                    'userDetails.totalPower': 1,
+                    'userDetails.profilePicture': 1,
+                }
+            }
+        ]);
         
-        // Devolver los rankings
         res.status(200).json({
             topTotalPowerUsers,
-            topLevelUsers
+            topLevelUsers,
+            topCollection,
+            totalCards
         });
+
     } catch (err) {
         console.error('Error fetching rankings:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 module.exports = { getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan };
