@@ -87,11 +87,15 @@ const addNewGamesUser = async (req, res) => {
         const randomEyeGame = await findRandomGame();
         const lengthEye = randomEyeGame.eye_game.length - 1;
 
+        const randomPixelGame = await findRandomGame();
+        const lengthPixel = randomEyeGame.pixel_game.length - 1;
+
         const randomIndexOpening = Math.floor(Math.random() * lengthOpening);
         const randomIndexName = Math.floor(Math.random() * lengthName);
         const randomIndexImage = Math.floor(Math.random() * lengthImage);
         const randomIndexSilueta = Math.floor(Math.random() * lengthSilueta);
         const randomIndexEye = Math.floor(Math.random() * lengthEye);
+        const randomIndexPixel = Math.floor(Math.random() * lengthPixel);
 
         let newUserGames = new UserGames({
             userid: userId,
@@ -100,27 +104,36 @@ const addNewGamesUser = async (req, res) => {
             siluetaid: randomSiluetaGame._id,
             openingid: randomOpeningGame._id,
             eyeid: randomEyeGame._id,
+            pixelid: randomPixelGame._id,
+
             triesname: 0,
             triesimage: 0,
             triessilueta: 0,
             triesopening: 0,
             trieseye: 0,
+            triespixel: 0,
             resets: 10,
+
             finishedImage: false,
             finishedName: false,
             finishedSilueta: false,
             finishedOpening: false,
             finishedEye: false,
+            finishedPixel: false,
+
             statusRewardImage: 0,
             statusRewardSilueta: 0,
             statusRewardName: 0,
             statusRewardOpening: 0,
             statusRewardEye: 0,
+            statusRewardPixel: 0,
+
             imageSelected: randomIndexImage,
             nameSelected: randomIndexName,
             siluetaSelected: randomIndexSilueta,
             openingSelected: randomIndexOpening,
-            eyeSelected: randomIndexEye
+            eyeSelected: randomIndexEye,
+            pixelSelected: randomIndexPixel
         });
 
         const savedUserGames = await newUserGames.save();
@@ -193,6 +206,15 @@ const updateGame = async (req, res) => {
                     userQuest.statusQuestOpening = 1;
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
+            } else if (game==="pixel") {
+                userGame.finishedPixel = finished;
+                userGame.triespixel = userGame.triespixel + tries;
+                userGame.statusRewardPixel = statusReward;
+                if(statusReward === 1) {
+                    userQuest = await UserQuests.findOne({ userid: userid });
+                    userQuest.statusQuestPixel = 1;
+                    userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
+                }
             }
 
             if(userQuest) {
@@ -239,6 +261,10 @@ const updateSelected = async (req, res) => {
                 const game = await Game.findOne({ _id: userGame.eyeid });
                 const randomIndex = Math.floor(Math.random() * (game.eye_game.length-1));
                 userGame.eyeSelected = randomIndex;
+            } else if (game==="pixel") {
+                const game = await Game.findOne({ _id: userGame.pixelid });
+                const randomIndex = Math.floor(Math.random() * (game.pixel_game.length-1));
+                userGame.pixelSelected = randomIndex;
             }
             
             await userGame.save();
@@ -272,6 +298,8 @@ const updateClaimReward = async (req, res) => {
                 userGame.statusRewardOpening = status;
             } else if (game==="eye") {
                 userGame.statusRewardEye = status;
+            } else if (game==="pixel") {
+                userGame.statusRewardPixel = status;
             }
 
             userGacha.gachas = userGacha.gachas + gachas;
@@ -293,6 +321,7 @@ const resetDailyGames = async (req, res) => {
         await UserQuests.updateMany({}, { $set: { statusQuestName: 0 } });
         await UserQuests.updateMany({}, { $set: { statusQuestSilueta: 0 } });
         await UserQuests.updateMany({}, { $set: { statusQuestOpening: 0 } });
+        await UserQuests.updateMany({}, { $set: { statusQuestPixel: 0 } });
         await UserQuests.updateMany({}, { $set: { statusQuestAllGames: 0 } });
 
         res.status(200).json("Reset");
@@ -340,6 +369,12 @@ const resetGame = async (req, res) => {
                 } else {
                     differentAnime = true;
                 }
+            } else if (game==="pixel") {
+                if(randomGame._id.toString() === userGame.pixelid.toString()) {
+                    randomGame = await findRandomGame();
+                } else {
+                    differentAnime = true;
+                }
             }
         }
 
@@ -359,6 +394,8 @@ const resetGame = async (req, res) => {
                 userGame.openingid = randomGame._id;
             } else if (game === "eye") {
                 userGame.eyeid = randomGame._id;
+            } else if (game === "pixel") {
+                userGame.pixelid = randomGame._id;
             }
 
             if(userGame.resets>0) {

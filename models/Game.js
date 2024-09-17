@@ -34,6 +34,10 @@ const GameSchema = new Schema({
         type: String, 
         required: true 
     }],
+    pixel_game: [{ 
+        type: String, 
+        required: true 
+    }]
 });
 
 module.exports = Game = mongoose.model('Game', GameSchema);

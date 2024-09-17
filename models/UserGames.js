@@ -32,6 +32,12 @@ const UserGamesSchema = new Schema({
         ref: 'Game',
         required: true 
     },
+    pixelid: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'Game',
+        required: true 
+    },
+
     triesname: {
         type: Number,
         required: true
@@ -52,10 +58,17 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: true
     },
+    triespixel: {
+        type: Number,
+        required: true
+    },
+
     resets: {
         type: Number,
         required: true
     },
+
+
     finishedImage: {
         type: Boolean,
         required: true
@@ -76,6 +89,11 @@ const UserGamesSchema = new Schema({
         type: Boolean,
         required: true
     },
+    finishedPixel: {
+        type: Boolean,
+        required: true
+    },
+
     statusRewardImage: {
         type: Number,
         required: true
@@ -95,7 +113,13 @@ const UserGamesSchema = new Schema({
     statusRewardEye: {
         type: Number,
         required: true
+    }, 
+    statusRewardPixel: {
+        type: Number,
+        required: true
     },
+
+
     imageSelected: {
         type: Number,
         required: false
@@ -113,6 +137,10 @@ const UserGamesSchema = new Schema({
         required: false
     },
     eyeSelected: {
+        type: Number,
+        required: false
+    },
+    pixelSelected: {
         type: Number,
         required: false
     }

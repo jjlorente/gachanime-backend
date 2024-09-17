@@ -75,6 +75,7 @@ const addNewQuestsUser = async (req, res) => {
             statusQuestSilueta: 0,
             statusQuestName: 0,
             statusQuestOpening: 0,
+            statusQuestPixel: 0,
             statusQuestAllGames: 0,
             statusWeek: 0,
             statusSummonsWeek: 0,

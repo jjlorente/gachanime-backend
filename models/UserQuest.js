@@ -23,6 +23,10 @@ const UserQuestSchema = new Schema({
         type: Number,
         required: true
     },
+    statusQuestPixel: {
+        type: Number,
+        required: true
+    },
     statusQuestAllGames: {
         type: Number,
         required: true
