@@ -73,22 +73,22 @@ const addNewGamesUser = async (req, res) => {
     try {
         
         const randomNameGame = await findRandomGame();
-        const lengthName = randomNameGame.names_game.length - 1;
+        const lengthName = randomNameGame.names_game.length;
 
         const randomImageGame = await findRandomGame();
-        const lengthImage = randomImageGame.image_game.length - 1;
+        const lengthImage = randomImageGame.image_game.length;
 
         const randomSiluetaGame = await findRandomGame();
-        const lengthSilueta = randomSiluetaGame.silueta_game.length - 1;
+        const lengthSilueta = randomSiluetaGame.silueta_game.length;
 
         const randomOpeningGame = await findRandomGame();
-        const lengthOpening = randomOpeningGame.opening.length - 1;
+        const lengthOpening = randomOpeningGame.opening.length;
 
         const randomEyeGame = await findRandomGame();
-        const lengthEye = randomEyeGame.eye_game.length - 1;
+        const lengthEye = randomEyeGame.eye_game.length;
 
         const randomPixelGame = await findRandomGame();
-        const lengthPixel = randomEyeGame.pixel_game.length - 1;
+        const lengthPixel = randomEyeGame.pixel_game.length;
 
         const randomIndexOpening = Math.floor(Math.random() * lengthOpening);
         const randomIndexName = Math.floor(Math.random() * lengthName);
@@ -243,28 +243,34 @@ const updateSelected = async (req, res) => {
         if (userGame) {
             if(game==="image") {
                 const game = await Game.findOne({ _id: userGame.imageid });
-                const randomIndex = Math.floor(Math.random() * (game.image_game.length-1));
+                const randomIndex = Math.floor(Math.random() * (game.image_game.length));
                 userGame.imageSelected = randomIndex;
+                userGame.triesimage = 0;
             } else if (game==="silueta") {
                 const game = await Game.findOne({ _id: userGame.siluetaid });
-                const randomIndex = Math.floor(Math.random() * (game.silueta_game.length-1));
+                const randomIndex = Math.floor(Math.random() * (game.silueta_game.length));
                 userGame.siluetaSelected = randomIndex;
+                userGame.triessilueta = 0;
             } else if (game==="name") {
                 const game = await Game.findOne({ _id: userGame.nameid });
-                const randomIndex = Math.floor(Math.random() * (game.names_game.length-1));
+                const randomIndex = Math.floor(Math.random() * (game.names_game.length));
                 userGame.nameSelected = randomIndex;
+                userGame.triesname = 0;
             } else if (game==="opening") {
                 const game = await Game.findOne({ _id: userGame.openingid });
-                const randomIndex = Math.floor(Math.random() * (game.opening.length-1));
+                const randomIndex = Math.floor(Math.random() * (game.opening.length));
                 userGame.openingSelected = randomIndex;
+                userGame.triesopening = 0;
             } else if (game==="eye") {
                 const game = await Game.findOne({ _id: userGame.eyeid });
-                const randomIndex = Math.floor(Math.random() * (game.eye_game.length-1));
+                const randomIndex = Math.floor(Math.random() * (game.eye_game.length));
                 userGame.eyeSelected = randomIndex;
+                userGame.trieseye = 0;
             } else if (game==="pixel") {
                 const game = await Game.findOne({ _id: userGame.pixelid });
-                const randomIndex = Math.floor(Math.random() * (game.pixel_game.length-1));
+                const randomIndex = Math.floor(Math.random() * (game.pixel_game.length));
                 userGame.pixelSelected = randomIndex;
+                userGame.triespixel = 0;
             }
             
             await userGame.save();
