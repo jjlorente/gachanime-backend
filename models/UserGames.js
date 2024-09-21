@@ -12,21 +12,21 @@ const UserGamesSchema = new Schema({
         ref: 'Game',
         required: true 
     },
-    imageid: { 
+    imageid: [{ 
         type: Schema.Types.ObjectId, 
         ref: 'Game',
         required: true 
-    },
-    siluetaid: { 
+    }],
+    siluetaid: [{ 
         type: Schema.Types.ObjectId, 
         ref: 'Game',
         required: true 
-    },
-    openingid: { 
+    }],
+    openingid: [{ 
         type: Schema.Types.ObjectId, 
         ref: 'Game',
         required: true 
-    },
+    }],
     eyeid: { 
         type: Schema.Types.ObjectId, 
         ref: 'Game',
@@ -42,18 +42,18 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: true
     },
-    triesimage: {
+    triesimage: [{
         type: Number,
         required: true
-    },
-    triesopening: {
+    }],
+    triesopening: [{
         type: Number,
         required: true
-    },
-    triessilueta: {
+    }],
+    triessilueta: [{
         type: Number,
         required: true
-    },
+    }],
     trieseye: {
         type: Number,
         required: true
@@ -69,22 +69,22 @@ const UserGamesSchema = new Schema({
     },
 
 
-    finishedImage: {
+    finishedImage: [{
         type: Boolean,
         required: true
-    },
+    }],
     finishedName: {
         type: Boolean,
         required: true
     },
-    finishedSilueta: {
+    finishedSilueta: [{
         type: Boolean,
         required: true
-    },
-    finishedOpening: {
+    }],
+    finishedOpening: [{
         type: Boolean,
         required: true
-    },
+    }],
     finishedEye: {
         type: Boolean,
         required: true
@@ -94,22 +94,22 @@ const UserGamesSchema = new Schema({
         required: true
     },
 
-    statusRewardImage: {
+    statusRewardImage: [{
         type: Number,
         required: true
-    },
-    statusRewardSilueta: {
+    }],
+    statusRewardSilueta: [{
         type: Number,
         required: true
-    },
+    }],
     statusRewardName: {
         type: Number,
         required: true
     },
-    statusRewardOpening: {
+    statusRewardOpening: [{
         type: Number,
         required: true
-    },
+    }],
     statusRewardEye: {
         type: Number,
         required: true
@@ -120,22 +120,22 @@ const UserGamesSchema = new Schema({
     },
 
 
-    imageSelected: {
+    imageSelected: [{
         type: Number,
         required: false
-    },
-    siluetaSelected: {
+    }],
+    siluetaSelected: [{
         type: Number,
         required: false
-    },
+    }],
     nameSelected: {
         type: Number,
         required: false
     },
-    openingSelected: {
+    openingSelected: [{
         type: Number,
         required: false
-    },
+    }],
     eyeSelected: {
         type: Number,
         required: false
