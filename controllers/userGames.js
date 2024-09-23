@@ -56,100 +56,50 @@ const findGameImageById = async (req, res) => {
 const findRandomGame = async (gameType, mode) => {
     try {
         let game;
-        if (mode === 0) {
+        const modeMap = {
+            0: {
+                image: "image_game",
+                silueta: "silueta_game",
+                opening: "opening",
+                name: "names_game",
+                eye: "eye_game",
+                pixel: "pixel_game",
+            },
+            1: {
+                image: "image_game_medium",
+                silueta: "silueta_game_medium",
+                opening: "opening_medium",
+                name: "names_game",
+                eye: "eye_game",
+                pixel: "pixel_game",
+            },
+            2: {
+                image: "image_game_hard",
+                silueta: "silueta_game_hard",
+                opening: "opening_hard",
+                name: "names_game",
+                eye: "eye_game",
+                pixel: "pixel_game",
+            },
+        };
 
-            if (gameType === "image") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.image_game);
-            } else if (gameType === "silueta") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.silueta_game); 
-            } else if (gameType === "opening") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.opening); 
-            } else if (gameType === "name") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.names_game); 
-            } else if (gameType === "eye") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.eye_game); 
-            } else if (gameType === "pixel") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.pixel_game); 
-            } else {
-                game = await Game.aggregate([{ $sample: { size: 1 } }]);
-            }
+        const field = modeMap[mode]?.[gameType] || null;
 
-        } else if (mode === 1) {
-
-            if (gameType === "image") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.image_game_medium); 
-            } else if (gameType === "silueta") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.silueta_game_medium); 
-            } else if (gameType === "opening") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.opening_medium); 
-            } else if (gameType === "name") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.names_game); 
-            } else if (gameType === "eye") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.eye_game); 
-            } else if (gameType === "pixel") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.pixel_game); 
-            }
-
-        } else if (mode === 2) {
-
-            if (gameType === "image") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.image_game_hard);
-            } else if (gameType === "silueta") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.silueta_game_hard); 
-            } else if (gameType === "opening") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.opening_hard); 
-            } else if (gameType === "name") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.names_game); 
-            } else if (gameType === "eye") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.eye_game); 
-            } else if (gameType === "pixel") {
-                do {
-                    game = await Game.aggregate([{ $sample: { size: 1 } }]);
-                } while (game.length === 0 || !game[0]?.pixel_game); 
-            }
-
+        if (field) {
+            game = await Game.aggregate([
+                { $match: { [field]: { $exists: true } } },
+                { $sample: { size: 1 } },
+            ]);
+        } else {
+            game = await Game.aggregate([{ $sample: { size: 1 } }]);
         }
-
         return game.length > 0 ? game[0] : null;
     } catch (error) {
         console.error('Error:', error);
         throw error;
     }
 };
+
 
 const addNewGamesUser = async (req, res) => {
     const { userId  } = req.body;
@@ -162,40 +112,38 @@ const addNewGamesUser = async (req, res) => {
         
         const randomNameGame = await findRandomGame("name", 0);
         const lengthName = randomNameGame.names_game.length;
-
+        
         const randomImageGame = await findRandomGame("image", 0);
         const lengthImage = randomImageGame.image_game.length;
         const randomImageGameMedium = await findRandomGame("image", 1);
-        const lengthImageMedium = randomImageGame.image_game_medium.length;
+        const lengthImageMedium = randomImageGameMedium.image_game_medium.length;
         const randomImageGameHard = await findRandomGame("image", 2);
-        const lengthImageHard = randomImageGame.image_game_hard.length;
+        const lengthImageHard = randomImageGameHard.image_game_hard.length;
 
         const randomSiluetaGame = await findRandomGame("silueta", 0);
         const lengthSilueta = randomSiluetaGame.silueta_game.length;
         const randomSiluetaGameMedium = await findRandomGame("silueta", 1);
-        const lengthSiluetaMedium = randomSiluetaGame.silueta_game_medium.length;
+        const lengthSiluetaMedium = randomSiluetaGameMedium.silueta_game_medium.length;
         const randomSiluetaGameHard = await findRandomGame("silueta", 2);
-        const lengthSiluetaHard = randomSiluetaGame.silueta_game_hard.length;
+        const lengthSiluetaHard = randomSiluetaGameHard.silueta_game_hard.length;
 
         const randomOpeningGame = await findRandomGame("opening", 0);
         const lengthOpening = randomOpeningGame.opening.length;
         const randomOpeningGameMedium = await findRandomGame("opening", 1);
-        const lengthOpeningMedium = randomOpeningGame.opening_medium.length;
+        const lengthOpeningMedium = randomOpeningGameMedium.opening_medium.length;
         const randomOpeningGameHard = await findRandomGame("opening", 2);
-        const lengthOpeningHard = randomOpeningGame.opening_hard.length;
+        const lengthOpeningHard = randomOpeningGameHard.opening_hard.length;
 
         const randomEyeGame = await findRandomGame("eye", 0);
         const lengthEye = randomEyeGame.eye_game.length;
 
         const randomPixelGame = await findRandomGame("pixel", 0);
-        const lengthPixel = randomEyeGame.pixel_game.length;
+        const lengthPixel = randomPixelGame.pixel_game.length;
 
         const randomIndexOpening = Math.floor(Math.random() * lengthOpening);
         const randomIndexOpeningMedium = Math.floor(Math.random() * lengthOpeningMedium);
         const randomIndexOpeningHard = Math.floor(Math.random() * lengthOpeningHard);
 
-        const randomIndexName = Math.floor(Math.random() * lengthName);
-        
         const randomIndexImage = Math.floor(Math.random() * lengthImage);        
         const randomIndexImageMedium = Math.floor(Math.random() * lengthImageMedium);
         const randomIndexImageHard = Math.floor(Math.random() * lengthImageHard);
@@ -204,6 +152,7 @@ const addNewGamesUser = async (req, res) => {
         const randomIndexSiluetaMedium = Math.floor(Math.random() * lengthSiluetaMedium);
         const randomIndexSiluetaHard = Math.floor(Math.random() * lengthSiluetaHard);
 
+        const randomIndexName = Math.floor(Math.random() * lengthName);
         const randomIndexEye = Math.floor(Math.random() * lengthEye);
         const randomIndexPixel = Math.floor(Math.random() * lengthPixel);
 
@@ -380,6 +329,8 @@ const updateSelected = async (req, res) => {
                 const randomIndex = Math.floor(Math.random() * (game.names_game.length));
                 userGame.nameSelected = randomIndex;
                 userGame.triesname = 0;
+                userGame.trieswords = [];
+                userGame.triescolors = [];
             } else if (game==="opening") {
                 const game = await Game.findOne({ _id: userGame.openingid[mode] });
                 let randomIndex;
@@ -549,4 +500,33 @@ const resetGame = async (req, res) => {
     }
 };
 
-module.exports = { findById, findGameImageById, addNewGamesUser, updateGame, updateClaimReward, resetGame, updateSelected, resetDailyGames, findCharactersNames };
+const updateGameName = async (req, res) => {
+    const { userid, word, colors } = req.body;
+    
+    try {
+        const userGame = await UserGames.findOne({ userid: userid });
+
+        if (!userGame) {
+            return res.status(404).json({ error: 'UserGame no encontrado' });
+        }
+
+        if (!userGame.trieswords) {
+            userGame.trieswords = [];
+        }
+        userGame.trieswords.push(word);
+
+        if (!userGame.triescolors) {
+            userGame.triescolors = [];
+        }
+        userGame.triescolors.push(colors); 
+
+        await userGame.save();
+        res.status(200).json(userGame);
+    } catch (error) {
+        console.error('Error al actualizar el userGame:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+
+module.exports = { findById, findGameImageById, addNewGamesUser, updateGame, updateClaimReward, resetGame, updateSelected, resetDailyGames, findCharactersNames, updateGameName };

@@ -10,6 +10,7 @@ router.put("/update", UserGamesController.updateGame);
 router.put("/updateReward", UserGamesController.updateClaimReward);
 router.put("/resetGame", UserGamesController.resetGame);
 router.put("/updateSelected", UserGamesController.updateSelected);
+router.put("/updateGameName", UserGamesController.updateGameName);
 router.delete("/deleteAll", UserGamesController.resetDailyGames);
 
 module.exports = router;

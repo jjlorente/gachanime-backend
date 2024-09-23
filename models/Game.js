@@ -9,82 +9,86 @@ const GameSchema = new Schema({
 
     names_game: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     names_game_medium: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     names_game_hard: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
 
     image_game: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     image_game_medium: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     image_game_hard: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
 
 
     opening: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     opening_medium: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     opening_hard: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
-
+    opening_solutions: {
+        type: [[String]],  
+        required: false
+    },
+    
     eye_game: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     eye_solution: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
 
     pixel_game: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
 
     
     silueta_game: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     silueta_solution: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     silueta_game_medium: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     silueta_solution_medium: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     silueta_game_hard: [{ 
         type: String, 
-        required: true 
+        required: false 
     }],
     silueta_solution_hard: [{ 
         type: String, 
-        required: true 
+        required: false 
     }]
 });
 

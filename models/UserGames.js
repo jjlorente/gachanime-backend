@@ -42,6 +42,16 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: true
     },
+
+    trieswords: [{
+        type: String,
+        required: false
+    }],
+    triescolors: {
+        type: [[String]],  
+        required: false
+    },
+
     triesimage: [{
         type: Number,
         required: true
