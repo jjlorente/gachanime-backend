@@ -9,6 +9,7 @@ router.get("/", UserController.findAllUsers);
 router.get("/findById", UserController.findById);
 router.get("/getRank", UserController.getRanking);
 router.put("/updateLevel", UserController.updateLevel);
+router.put("/unlockMode", UserController.unlockMode);
 router.put("/updatePower", UserController.updatePower);
 router.put("/updateUser", UserController.updateUser);
 router.put("/updateUserLan", UserController.updateUserLan);

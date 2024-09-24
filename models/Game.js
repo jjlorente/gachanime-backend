@@ -59,12 +59,35 @@ const GameSchema = new Schema({
         type: String, 
         required: false 
     }],
+    eye_game_medium: [{ 
+        type: String, 
+        required: false 
+    }],
+    eye_solution_medium: [{ 
+        type: String, 
+        required: false 
+    }],
+    eye_game_hard: [{ 
+        type: String, 
+        required: false 
+    }],
+    eye_solution_hard: [{ 
+        type: String, 
+        required: false 
+    }],
 
     pixel_game: [{ 
         type: String, 
         required: false 
     }],
-
+    pixel_game_medium: [{ 
+        type: String, 
+        required: false 
+    }],
+    pixel_game_hard: [{ 
+        type: String, 
+        required: false 
+    }],
     
     silueta_game: [{ 
         type: String, 

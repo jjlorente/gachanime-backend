@@ -27,16 +27,16 @@ const UserGamesSchema = new Schema({
         ref: 'Game',
         required: true 
     }],
-    eyeid: { 
+    eyeid: [{ 
         type: Schema.Types.ObjectId, 
         ref: 'Game',
         required: true 
-    },
-    pixelid: { 
+    }],
+    pixelid: [{ 
         type: Schema.Types.ObjectId, 
         ref: 'Game',
         required: true 
-    },
+    }],
 
     triesname: {
         type: Number,
@@ -64,14 +64,14 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: true
     }],
-    trieseye: {
+    trieseye: [{
         type: Number,
         required: true
-    },
-    triespixel: {
+    }],
+    triespixel: [{
         type: Number,
         required: true
-    },
+    }],
 
     resets: {
         type: Number,
@@ -95,14 +95,14 @@ const UserGamesSchema = new Schema({
         type: Boolean,
         required: true
     }],
-    finishedEye: {
+    finishedEye: [{
         type: Boolean,
         required: true
-    },
-    finishedPixel: {
+    }],
+    finishedPixel: [{
         type: Boolean,
         required: true
-    },
+    }],
 
     statusRewardImage: [{
         type: Number,
@@ -120,14 +120,14 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: true
     }],
-    statusRewardEye: {
+    statusRewardEye: [{
         type: Number,
         required: true
-    }, 
-    statusRewardPixel: {
+    }], 
+    statusRewardPixel: [{
         type: Number,
         required: true
-    },
+    }],
 
 
     imageSelected: [{
@@ -146,14 +146,14 @@ const UserGamesSchema = new Schema({
         type: Number,
         required: false
     }],
-    eyeSelected: {
+    eyeSelected: [{
         type: Number,
         required: false
-    },
-    pixelSelected: {
+    }],
+    pixelSelected: [{
         type: Number,
         required: false
-    }
+    }]
 });
 
 module.exports = UserGames = mongoose.model('UserGames', UserGamesSchema);

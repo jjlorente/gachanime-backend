@@ -70,16 +70,16 @@ const findRandomGame = async (gameType, mode) => {
                 silueta: "silueta_game_medium",
                 opening: "opening_medium",
                 name: "names_game",
-                eye: "eye_game",
-                pixel: "pixel_game",
+                eye: "eye_game_medium",
+                pixel: "pixel_game_medium",
             },
             2: {
                 image: "image_game_hard",
                 silueta: "silueta_game_hard",
                 opening: "opening_hard",
                 name: "names_game",
-                eye: "eye_game",
-                pixel: "pixel_game",
+                eye: "eye_game_hard",
+                pixel: "pixel_game_hard",
             },
         };
 
@@ -136,9 +136,17 @@ const addNewGamesUser = async (req, res) => {
 
         const randomEyeGame = await findRandomGame("eye", 0);
         const lengthEye = randomEyeGame.eye_game.length;
+        const randomEyeGameMedium = await findRandomGame("eye", 1);
+        const lengthEyeMedium = randomEyeGameMedium.eye_game_medium.length;
+        const randomEyeGameHard = await findRandomGame("eye", 2);
+        const lengthEyeHard = randomEyeGameHard.eye_game_hard.length;
 
         const randomPixelGame = await findRandomGame("pixel", 0);
         const lengthPixel = randomPixelGame.pixel_game.length;
+        const randomPixelGameMedium = await findRandomGame("pixel", 1);
+        const lengthPixelMedium = randomPixelGameMedium.pixel_game_medium.length;
+        const randomPixelGameHard = await findRandomGame("pixel", 2);
+        const lengthPixelHard = randomPixelGameHard.pixel_game_hard.length;
 
         const randomIndexOpening = Math.floor(Math.random() * lengthOpening);
         const randomIndexOpeningMedium = Math.floor(Math.random() * lengthOpeningMedium);
@@ -153,8 +161,14 @@ const addNewGamesUser = async (req, res) => {
         const randomIndexSiluetaHard = Math.floor(Math.random() * lengthSiluetaHard);
 
         const randomIndexName = Math.floor(Math.random() * lengthName);
+
         const randomIndexEye = Math.floor(Math.random() * lengthEye);
+        const randomIndexEyeMedium = Math.floor(Math.random() * lengthEyeMedium);
+        const randomIndexEyeHard = Math.floor(Math.random() * lengthEyeHard);
+
         const randomIndexPixel = Math.floor(Math.random() * lengthPixel);
+        const randomIndexPixelMedium = Math.floor(Math.random() * lengthPixelMedium);
+        const randomIndexPixelHard = Math.floor(Math.random() * lengthPixelHard);
 
         let newUserGames = new UserGames({
             userid: userId,
@@ -162,37 +176,37 @@ const addNewGamesUser = async (req, res) => {
             imageid: [randomImageGame._id, randomImageGameMedium._id, randomImageGameHard._id],
             siluetaid: [randomSiluetaGame._id, randomSiluetaGameMedium._id, randomSiluetaGameHard._id],
             openingid: [randomOpeningGame._id, randomOpeningGameMedium._id, randomOpeningGameHard._id],
-            eyeid: randomEyeGame._id,
-            pixelid: randomPixelGame._id,
+            eyeid: [randomEyeGame._id, randomEyeGameMedium._id, randomEyeGameHard._id],
+            pixelid: [randomPixelGame._id, randomPixelGameMedium._id, randomPixelGameHard._id],
 
             triesname: 0,
             triesimage: [0, 0, 0],
             triessilueta: [0, 0, 0],
             triesopening: [0, 0, 0],
-            trieseye: 0,
-            triespixel: 0,
+            trieseye: [0, 0, 0],
+            triespixel: [0, 0, 0],
             resets: 10,
 
             finishedImage: [false, false, false],
             finishedName: false,
             finishedSilueta: [false, false, false],
             finishedOpening: [false, false, false],
-            finishedEye: false,
-            finishedPixel: false,
+            finishedEye: [false, false, false],
+            finishedPixel: [false, false, false],
 
             statusRewardImage: [0, 0, 0],
             statusRewardSilueta: [0, 0, 0],
             statusRewardName: 0,
             statusRewardOpening: [0, 0, 0],
-            statusRewardEye: 0,
-            statusRewardPixel: 0,
+            statusRewardEye: [false, false, false],
+            statusRewardPixel: [false, false, false],
 
             imageSelected: [randomIndexImage, randomIndexImageMedium, randomIndexImageHard],
             nameSelected: randomIndexName,
             siluetaSelected: [randomIndexSilueta, randomIndexSiluetaMedium, randomIndexSiluetaHard],
             openingSelected: [randomIndexOpening, randomIndexOpeningMedium, randomIndexOpeningHard],
-            eyeSelected: randomIndexEye,
-            pixelSelected: randomIndexPixel
+            eyeSelected: [randomIndexEye, randomIndexEyeMedium, randomIndexEyeHard],
+            pixelSelected: [randomIndexPixel, randomIndexPixelMedium, randomIndexPixelHard],
         });
 
         const savedUserGames = await newUserGames.save();
@@ -237,9 +251,9 @@ const updateGame = async (req, res) => {
                 }
 
             } else if (game==="eye") {
-                userGame.finishedEye = finished;
-                userGame.trieseye = userGame.trieseye + tries;
-                userGame.statusRewardEye = statusReward;
+                userGame.finishedEye[mode] = finished;
+                userGame.trieseye[mode] = userGame.trieseye[mode] + tries;
+                userGame.statusRewardEye[mode] = statusReward;
 
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
@@ -266,9 +280,9 @@ const updateGame = async (req, res) => {
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
             } else if (game==="pixel") {
-                userGame.finishedPixel = finished;
-                userGame.triespixel = userGame.triespixel + tries;
-                userGame.statusRewardPixel = statusReward;
+                userGame.finishedPixel[mode] = finished;
+                userGame.triespixel[mode] = userGame.triespixel[mode] + tries;
+                userGame.statusRewardPixel[mode] = statusReward;
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
                     userQuest.statusQuestPixel = 1;
@@ -344,15 +358,29 @@ const updateSelected = async (req, res) => {
                 userGame.openingSelected[mode] = randomIndex;
                 userGame.triesopening[mode] = 0;
             } else if (game==="eye") {
-                const game = await Game.findOne({ _id: userGame.eyeid });
-                const randomIndex = Math.floor(Math.random() * (game.eye_game.length));
-                userGame.eyeSelected = randomIndex;
-                userGame.trieseye = 0;
+                const game = await Game.findOne({ _id: userGame.eyeid[mode] });
+                let randomIndex;
+                if(mode === 0) {
+                    randomIndex = Math.floor(Math.random() * (game.eye_game.length));
+                } else if (mode === 1) {
+                    randomIndex = Math.floor(Math.random() * (game.eye_game_medium.length));
+                } else if (mode === 2) {
+                    randomIndex = Math.floor(Math.random() * (game.eye_game_hard.length));
+                }
+                userGame.eyeSelected[mode] = randomIndex;
+                userGame.trieseye[mode] = 0;
             } else if (game==="pixel") {
-                const game = await Game.findOne({ _id: userGame.pixelid });
-                const randomIndex = Math.floor(Math.random() * (game.pixel_game.length));
-                userGame.pixelSelected = randomIndex;
-                userGame.triespixel = 0;
+                const game = await Game.findOne({ _id: userGame.pixelid[mode] });
+                let randomIndex;
+                if(mode === 0) {
+                    randomIndex = Math.floor(Math.random() * (game.pixel_game.length));
+                } else if (mode === 1) {
+                    randomIndex = Math.floor(Math.random() * (game.pixel_game_medium.length));
+                } else if (mode === 2) {
+                    randomIndex = Math.floor(Math.random() * (game.pixel_game_hard.length));
+                }
+                userGame.pixelSelected[mode] = randomIndex;
+                userGame.triespixel[mode] = 0;
             }
             
             await userGame.save();
@@ -385,9 +413,9 @@ const updateClaimReward = async (req, res) => {
             } else if (game==="opening") {
                 userGame.statusRewardOpening[mode] = status;
             } else if (game==="eye") {
-                userGame.statusRewardEye = status;
+                userGame.statusRewardEye[mode]  = status;
             } else if (game==="pixel") {
-                userGame.statusRewardPixel = status;
+                userGame.statusRewardPixel[mode]  = status;
             }
 
             userGacha.gachas = userGacha.gachas + gachas;
@@ -452,13 +480,13 @@ const resetGame = async (req, res) => {
                     differentAnime = true;
                 }
             } else if (game==="eye") {
-                if(randomGame._id.toString() === userGame.eyeid.toString()) {
+                if(randomGame._id.toString() === userGame.eyeid[mode] .toString()) {
                     randomGame = await findRandomGame("eye", mode);
                 } else {
                     differentAnime = true;
                 }
             } else if (game==="pixel") {
-                if(randomGame._id.toString() === userGame.pixelid.toString()) {
+                if(randomGame._id.toString() === userGame.pixelid[mode] .toString()) {
                     randomGame = await findRandomGame("pixel", mode);
                 } else {
                     differentAnime = true;
@@ -481,9 +509,9 @@ const resetGame = async (req, res) => {
             } else if (game === "opening") {
                 userGame.openingid[mode] = randomGame._id;
             } else if (game === "eye") {
-                userGame.eyeid = randomGame._id;
+                userGame.eyeid[mode]  = randomGame._id;
             } else if (game === "pixel") {
-                userGame.pixelid = randomGame._id;
+                userGame.pixelid[mode]  = randomGame._id;
             }
 
             if(userGame.resets>0) {
@@ -502,7 +530,7 @@ const resetGame = async (req, res) => {
 
 const updateGameName = async (req, res) => {
     const { userid, word, colors } = req.body;
-    
+
     try {
         const userGame = await UserGames.findOne({ userid: userid });
 

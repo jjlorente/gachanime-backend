@@ -193,6 +193,27 @@ const updateUser = async (req, res) => {
     }
 };
 
+const unlockMode = async (req, res) => {
+    const { userid, mode } = req.body;
+    const user = await User.findOne({ _id: userid });
+
+    try {
+        if (!user) {
+            return res.status(404).json({ error: 'user no encontrado' });
+        }
+
+        if(mode) {
+            user.unlockModes[mode] = true;
+        }
+
+        await user.save();
+        res.status(200).json(user);
+    } catch (err) {
+        console.error('Error updating document:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 const addUser = async (req, res) => {
     const { username, password, email  } = req.body;
     try {
@@ -235,7 +256,7 @@ const updatePower = async (req, res) => {
             return res.status(404).json({ error: 'user no encontrado' });
         }
 
-        if(power.totalPower && power.totalPower > user.totalPower) {
+        if(power.totalPower) {
             user.totalPower = power.totalPower;
         }
 
@@ -313,4 +334,4 @@ const getRanking = async (req, res) => {
 };
 
 
-module.exports = { getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan };
+module.exports = { getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan, unlockMode };
