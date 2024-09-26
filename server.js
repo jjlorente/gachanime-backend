@@ -94,15 +94,15 @@ mongoose.connect('mongodb://127.0.0.1:27017/gachanime', { useNewUrlParser: true,
         }
     };
 
-    cron.schedule('00 00 * * *', async () => {
-        try {
-            await UserGamesCollection.deleteMany({});
-            //await resetDaily();
-            console.log('Todos los documentos eliminados de la colección UserGames');
-        } catch (err) {
-            console.error('Error eliminando documentos:', err);
-        }
-    });
+    // cron.schedule('00 00 * * *', async () => {
+    //     try {
+    //         await UserGamesCollection.deleteMany({});
+    //         //await resetDaily();
+    //         console.log('Todos los documentos eliminados de la colección UserGames');
+    //     } catch (err) {
+    //         console.error('Error eliminando documentos:', err);
+    //     }
+    // });
 
 
 // io.on('connection', (socket) => {
