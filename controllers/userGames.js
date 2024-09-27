@@ -431,21 +431,101 @@ const updateClaimReward = async (req, res) => {
 };
 
 const resetDailyGames = async (req, res) => {
-    try {
-        await UserGames.deleteMany({});
-        await UserQuests.updateMany({}, { $set: { statusQuestImage: 0 } });
-        await UserQuests.updateMany({}, { $set: { statusQuestName: 0 } });
-        await UserQuests.updateMany({}, { $set: { statusQuestSilueta: 0 } });
-        await UserQuests.updateMany({}, { $set: { statusQuestOpening: 0 } });
-        await UserQuests.updateMany({}, { $set: { statusQuestPixel: 0 } });
-        await UserQuests.updateMany({}, { $set: { statusQuestAllGames: 0 } });
+    const { userid, type } = req.body;
 
-        res.status(200).json("Reset");
+    try {
+        const userGame = await UserGames.findOne({ userid });
+        if(type === true) {
+            const arrayGames = ["image", "silueta", "eye", "pixel", "opening"];
+
+            const updateGameSelection = async (game, difficultyIndex) => {
+                let randomGame = await findRandomGame(game, difficultyIndex);
+                let differentAnime = false;
+
+                while (!differentAnime) {
+                    if (randomGame._id.toString() === userGame[`${game}id`][difficultyIndex].toString()) {
+                        randomGame = await findRandomGame(game, difficultyIndex);
+                    } else {
+                        differentAnime = true;
+                    }
+                }
+
+                const difficultyFields = {
+                    image: [`image_game`, `image_game_medium`, `image_game_hard`],
+                    silueta: [`silueta_game`, `silueta_game_medium`, `silueta_game_hard`],
+                    eye: [`eye_game`, `eye_game_medium`, `eye_game_hard`],
+                    pixel: [`pixel_game`, `pixel_game_medium`, `pixel_game_hard`],
+                    opening: [`opening`, `opening_medium`, `opening_hard`]
+                };
+
+                const field = difficultyFields[game][difficultyIndex];
+                const length = randomGame[field]?.length;
+
+                const randomIndex = Math.floor(Math.random() * length);
+                userGame[`${game}id`][difficultyIndex] = randomGame._id;
+                userGame[`${game}Selected`][difficultyIndex] = randomIndex;
+            };
+
+            await Promise.all(
+                arrayGames.map(async (game) => {
+                    return Promise.all(
+                        [0, 1, 2].map(async (difficultyIndex) => {
+                            await updateGameSelection(game, difficultyIndex);
+                        })
+                    );
+                })
+            );
+
+            const randomNameGame = await findRandomGame("name", 0);
+            userGame.nameid = randomNameGame._id;
+            userGame.nameSelected = Math.floor(Math.random() * randomNameGame.names_game.length);
+
+            userGame.triesname = 0;
+            userGame.triesimage = [0, 0, 0];
+            userGame.triessilueta = [0, 0, 0];
+            userGame.triesopening = [0, 0, 0];
+            userGame.trieseye = [0, 0, 0];
+            userGame.triespixel = [0, 0, 0];
+            userGame.trieswords = [];
+            userGame.triescolors = [];
+            userGame.resets = 10;
+
+            userGame.finishedImage = [false, false, false];
+            userGame.finishedName = false;
+            userGame.finishedSilueta = [false, false, false];
+            userGame.finishedOpening = [false, false, false];
+            userGame.finishedEye = [false, false, false];
+            userGame.finishedPixel = [false, false, false];
+
+            userGame.statusRewardImage = [0, 0, 0];
+            userGame.statusRewardSilueta = [0, 0, 0];
+            userGame.statusRewardName = 0;
+            userGame.statusRewardOpening = [0, 0, 0];
+            userGame.statusRewardEye = [false, false, false];
+            userGame.statusRewardPixel = [false, false, false];
+
+            await userGame.save();
+        }
+        if(type === false) {
+            await UserQuests.updateMany({}, { 
+                $set: { 
+                    statusQuestImage: 0, 
+                    statusQuestName: 0, 
+                    statusQuestSilueta: 0, 
+                    statusQuestOpening: 0, 
+                    statusQuestPixel: 0, 
+                    statusQuestAllGames: 0 
+                }
+            });
+        }
+        res.status(200).json(userGame);
     } catch (err) {
-        console.error('Error deleting documents:', err);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        console.error('Error resetting games:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
 
 const resetGame = async (req, res) => {
     const { userid, game, mode } = req.body;
@@ -480,13 +560,13 @@ const resetGame = async (req, res) => {
                     differentAnime = true;
                 }
             } else if (game==="eye") {
-                if(randomGame._id.toString() === userGame.eyeid[mode] .toString()) {
+                if(randomGame._id.toString() === userGame.eyeid[mode].toString()) {
                     randomGame = await findRandomGame("eye", mode);
                 } else {
                     differentAnime = true;
                 }
             } else if (game==="pixel") {
-                if(randomGame._id.toString() === userGame.pixelid[mode] .toString()) {
+                if(randomGame._id.toString() === userGame.pixelid[mode].toString()) {
                     randomGame = await findRandomGame("pixel", mode);
                 } else {
                     differentAnime = true;
