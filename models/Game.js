@@ -20,6 +20,11 @@ const GameSchema = new Schema({
         required: false 
     }],
 
+    wordle_game: [{ 
+        type: String, 
+        required: false 
+    }],
+
     image_game: [{ 
         type: String, 
         required: false 

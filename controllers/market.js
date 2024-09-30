@@ -100,9 +100,6 @@ const buyCard = async (req, res) => {
         }
 
         const result = await Market.deleteOne({ userid: userIdMarket, cardid: cardId, price: price});
-        if(result) {
-            console.log('Card eliminada exitosamente');
-        }
 
         res.status(201).json(userGachas);
     } catch (error) {
@@ -124,9 +121,7 @@ const cancelCard = async (req, res) => {
         }
 
         const result = await Market.deleteOne({ userid: userId, cardid: cardId, price: price });
-        if(result) {
-            console.log('Card eliminada exitosamente');
-        }else {
+        if(!result) {
             res.status(500).json('Error al eliminar card');
         }
 

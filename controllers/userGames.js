@@ -61,7 +61,7 @@ const findRandomGame = async (gameType, mode) => {
                 image: "image_game",
                 silueta: "silueta_game",
                 opening: "opening",
-                name: "names_game",
+                name: "wordle_game",
                 eye: "eye_game",
                 pixel: "pixel_game",
             },
@@ -69,7 +69,7 @@ const findRandomGame = async (gameType, mode) => {
                 image: "image_game_medium",
                 silueta: "silueta_game_medium",
                 opening: "opening_medium",
-                name: "names_game",
+                name: "wordle_game",
                 eye: "eye_game_medium",
                 pixel: "pixel_game_medium",
             },
@@ -77,7 +77,7 @@ const findRandomGame = async (gameType, mode) => {
                 image: "image_game_hard",
                 silueta: "silueta_game_hard",
                 opening: "opening_hard",
-                name: "names_game",
+                name: "wordle_game",
                 eye: "eye_game_hard",
                 pixel: "pixel_game_hard",
             },
@@ -111,7 +111,7 @@ const addNewGamesUser = async (req, res) => {
     try {
         
         const randomNameGame = await findRandomGame("name", 0);
-        const lengthName = randomNameGame.names_game.length;
+        const lengthName = randomNameGame.wordle_game.length;
         
         const randomImageGame = await findRandomGame("image", 0);
         const lengthImage = randomImageGame.image_game.length;
@@ -340,7 +340,7 @@ const updateSelected = async (req, res) => {
                 userGame.triessilueta[mode] = 0;
             } else if (game==="name") {
                 const game = await Game.findOne({ _id: userGame.nameid });
-                const randomIndex = Math.floor(Math.random() * (game.names_game.length));
+                const randomIndex = Math.floor(Math.random() * (game.wordle_game.length));
                 userGame.nameSelected = randomIndex;
                 userGame.triesname = 0;
                 userGame.trieswords = [];
@@ -478,7 +478,7 @@ const resetDailyGames = async (req, res) => {
 
             const randomNameGame = await findRandomGame("name", 0);
             userGame.nameid = randomNameGame._id;
-            userGame.nameSelected = Math.floor(Math.random() * randomNameGame.names_game.length);
+            userGame.nameSelected = Math.floor(Math.random() * randomNameGame.wordle_game.length);
 
             userGame.triesname = 0;
             userGame.triesimage = [0, 0, 0];

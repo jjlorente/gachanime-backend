@@ -6,6 +6,7 @@ const socketIO = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
 const cron = require('node-cron');
+require('dotenv').config();
 
 const UserGamesCollection = require('./models/UserGames'); 
 const Day = require('./models/Day'); 
@@ -54,7 +55,7 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK' }).end();
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/gachanime', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Conexión a MongoDB establecida con éxito');
         server.listen(PORT, () => {
@@ -93,17 +94,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/gachanime', { useNewUrlParser: true,
             console.error('Error actualizando el campo lastReset:', err);
         }
     };
-
-    // cron.schedule('00 00 * * *', async () => {
-    //     try {
-    //         await UserGamesCollection.deleteMany({});
-    //         //await resetDaily();
-    //         console.log('Todos los documentos eliminados de la colección UserGames');
-    //     } catch (err) {
-    //         console.error('Error eliminando documentos:', err);
-    //     }
-    // });
-
 
 // io.on('connection', (socket) => {
 //     console.log('Nuevo cliente conectado');
