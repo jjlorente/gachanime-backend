@@ -235,7 +235,9 @@ const updateGame = async (req, res) => {
 
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
-                    userQuest.statusQuestImage = 1;
+                    if(userQuest.statusQuestImage < 2) {
+                        userQuest.statusQuestImage = 1;                    
+                    }
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
 
@@ -246,7 +248,9 @@ const updateGame = async (req, res) => {
 
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
-                    userQuest.statusQuestSilueta = 1;
+                    if(userQuest.statusQuestSilueta < 2) {
+                        userQuest.statusQuestSilueta = 1;                    
+                    }
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
 
@@ -257,7 +261,9 @@ const updateGame = async (req, res) => {
 
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
-                    userQuest.statusRewardEye = 1;
+                    if(userQuest.statusRewardEye < 2) {
+                        userQuest.statusRewardEye = 1;                    
+                    }
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
 
@@ -267,7 +273,9 @@ const updateGame = async (req, res) => {
                 userGame.statusRewardName = statusReward;
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
-                    userQuest.statusQuestName = 1;
+                    if(userQuest.statusQuestName < 2) {
+                        userQuest.statusQuestName = 1;                    
+                    }
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
             } else if (game==="opening") {
@@ -276,7 +284,9 @@ const updateGame = async (req, res) => {
                 userGame.statusRewardOpening[mode] = statusReward;
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
-                    userQuest.statusQuestOpening = 1;
+                    if(userQuest.statusQuestOpening < 2) {
+                        userQuest.statusQuestOpening = 1;
+                    }
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
             } else if (game==="pixel") {
@@ -285,7 +295,9 @@ const updateGame = async (req, res) => {
                 userGame.statusRewardPixel[mode] = statusReward;
                 if(statusReward === 1) {
                     userQuest = await UserQuests.findOne({ userid: userid });
-                    userQuest.statusQuestPixel = 1;
+                    if(userQuest.statusQuestPixel < 2) {
+                        userQuest.statusQuestPixel = 1;
+                    }
                     userQuest.statusQuestAllGames = userQuest.statusQuestAllGames + 1;
                 }
             }
