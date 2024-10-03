@@ -4,7 +4,7 @@ const UserQuests = require("../models/UserQuest");
 const User = require("../models/User");
 
 const findById = async (req, res) => {
-    const { userId } = req.query; 
+    const { userId } = req.body; 
 
     try {
         const user = await User.findById(userId);
@@ -31,7 +31,7 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const { userId } = req.query; 
+    const { userId } = req.body; 
     try {
         const user = await User.findById(userId);
         const now = new Date();
