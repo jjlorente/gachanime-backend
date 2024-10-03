@@ -19,6 +19,21 @@ const findById = async (req, res) => {
     }
 };
 
+const getWeek = async (req, res) => {
+
+    try {
+        const day = await Day.findOne({});
+        if (!day) {
+            return res.status(404).json({ error: 'day no encontrados' });
+        }
+        console.log(day)
+
+        res.status(200).json(day);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
 const create = async (req, res) => {
 
     try {
@@ -74,4 +89,4 @@ const updateWeek = async (req, res) => {
     }
 }
 
-module.exports = { findById, create, update, updateWeek };
+module.exports = { findById, create, update, updateWeek, getWeek };
