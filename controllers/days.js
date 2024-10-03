@@ -1,15 +1,17 @@
 const mongoose = require("mongoose");
 const Day = require("../models/Day");
 const UserQuests = require("../models/UserQuest");
+const User = require("../models/User");
 
 const findById = async (req, res) => {
-    
+    const { userId } = req.query; 
+
     try {
-        let dayDoc = await Day.findOne({});
+        const user = await User.findById(userId);
         if (!dayDoc) {
             return res.status(404).json({ error: 'day no encontrados' });
         }
-        res.status(200).json(dayDoc);
+        res.status(200).json(user);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -29,17 +31,17 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-
+    const { userId } = req.query; 
     try {
-        let dayDoc = await Day.findOne({});
+        const user = await User.findById(userId);
         const now = new Date();
         const options = { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit' };
         const formatter = new Intl.DateTimeFormat('en-GB', options);
         const [day, month, year] = formatter.format(now).split('/');
 
-        dayDoc.lastReset = `${year},${month},${day}`;
-        await dayDoc.save();
-        res.status(201).json(dayDoc.lastReset);
+        user.dayUser = `${year},${month},${day}`;
+        await user.save();
+        res.status(201).json(user.dayUser);
 
     } catch (error) {
         console.error('Error al update dia:', error);
