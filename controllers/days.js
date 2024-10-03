@@ -1,34 +1,15 @@
 const mongoose = require("mongoose");
 const Day = require("../models/Day");
 const UserQuests = require("../models/UserQuest");
-const User = require("../models/User");
 
 const findById = async (req, res) => {
-    const { userId } = req.body; 
-    console.log(userId)
+    
     try {
-        const user = await User.findById(userId);
-        if (!user) {
+        let dayDoc = await Day.findOne({});
+        if (!dayDoc) {
             return res.status(404).json({ error: 'day no encontrados' });
         }
-        console.log(user.dayUser)
-
-        res.status(200).json(user);
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-};
-
-const getWeek = async (req, res) => {
-
-    try {
-        const day = await Day.findOne({});
-        if (!day) {
-            return res.status(404).json({ error: 'day no encontrados' });
-        }
-        console.log(day)
-
-        res.status(200).json(day);
+        res.status(200).json(dayDoc);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -48,17 +29,17 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const { userId } = req.body; 
+
     try {
-        const user = await User.findById(userId);
+        let dayDoc = await Day.findOne({});
         const now = new Date();
         const options = { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit' };
         const formatter = new Intl.DateTimeFormat('en-GB', options);
         const [day, month, year] = formatter.format(now).split('/');
 
-        user.dayUser = `${year},${month},${day}`;
-        await user.save();
-        res.status(201).json(user.dayUser);
+        dayDoc.lastReset = `${year},${month},${day}`;
+        await dayDoc.save();
+        res.status(201).json(dayDoc.lastReset);
 
     } catch (error) {
         console.error('Error al update dia:', error);
@@ -89,4 +70,4 @@ const updateWeek = async (req, res) => {
     }
 }
 
-module.exports = { findById, create, update, updateWeek, getWeek };
+module.exports = { findById, create, update, updateWeek };

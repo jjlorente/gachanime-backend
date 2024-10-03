@@ -34,18 +34,6 @@ const UserSchema = new Schema({
     unlockModes : {
         type: [Boolean],
         default: [true, false, false]
-    },
-    dayUser : {
-        type: String,
-        required: true,
-        default: () => {
-            const now = new Date();
-            now.setDate(now.getDate() - 1);
-            const options = { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit' };
-            const formatter = new Intl.DateTimeFormat('en-GB', options);
-            const [day, month, year] = formatter.format(now).split('/');
-            return `${year},${month},${day}`;
-        }
     }
 });
 
