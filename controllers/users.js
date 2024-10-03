@@ -81,6 +81,31 @@ const findByGoogleAccount = async (req, res) => {
     }
 };
 
+const updateReset = async (req, res) => {
+    const { userId } = req.body;
+    const user = await User.findOne({ _id: userId });
+
+    try {
+        if (!user) {
+            return res.status(404).json({ error: 'user no encontrado' });
+        }
+
+        if(user) {
+            const now = new Date();
+            const options = { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit' };
+            const formatter = new Intl.DateTimeFormat('en-GB', options);
+            const [day, month, year] = formatter.format(now).split('/');
+            user.resetGameDay = `${year},${month},${day}`;  
+        }
+
+        await user.save();
+        res.status(200).json(user.resetGameDay);
+    } catch (err) {
+        console.error('Error updating document:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 const updateLevel = async (req, res) => {
     const { userid, exp } = req.body;
     const user = await User.findOne({ _id: userid });
@@ -334,4 +359,4 @@ const getRanking = async (req, res) => {
 };
 
 
-module.exports = { getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan, unlockMode };
+module.exports = { updateReset, getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan, unlockMode };
