@@ -8,7 +8,7 @@ const findById = async (req, res) => {
 
     try {
         const user = await User.findById(userId);
-        if (!dayDoc) {
+        if (!user) {
             return res.status(404).json({ error: 'day no encontrados' });
         }
         res.status(200).json(user);
