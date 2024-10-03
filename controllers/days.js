@@ -5,12 +5,14 @@ const User = require("../models/User");
 
 const findById = async (req, res) => {
     const { userId } = req.body; 
-
+    console.log(userId)
     try {
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: 'day no encontrados' });
         }
+        console.log(user.dayUser)
+
         res.status(200).json(user);
     } catch (err) {
         res.status(500).send(err.message);
