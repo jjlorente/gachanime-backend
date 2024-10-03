@@ -446,7 +446,7 @@ const resetDailyGames = async (req, res) => {
     const { type } = req.body;
 
     try {
-        const allUserGames = await UserGames.find();  // Obtener todos los usuarios
+        const allUserGames = await UserGames.find();
 
         const arrayGames = ["image", "silueta", "eye", "pixel", "opening"];
 
@@ -478,65 +478,65 @@ const resetDailyGames = async (req, res) => {
             userGame[`${game}Selected`][difficultyIndex] = randomIndex;
         };
 
-        if (type === true) {
-            await Promise.all(
-                allUserGames.map(async (userGame) => {
-                    await Promise.all(
-                        arrayGames.map(async (game) => {
-                            return Promise.all(
-                                [0, 1, 2].map(async (difficultyIndex) => {
-                                    await updateGameSelection(userGame, game, difficultyIndex);
-                                })
-                            );
-                        })
-                    );
 
-                    const randomNameGame = await findRandomGame("name", 0);
-                    userGame.nameid = randomNameGame._id;
-                    userGame.nameSelected = Math.floor(Math.random() * randomNameGame.wordle_game.length);
+        await Promise.all(
+            allUserGames.map(async (userGame) => {
+                await Promise.all(
+                    arrayGames.map(async (game) => {
+                        return Promise.all(
+                            [0, 1, 2].map(async (difficultyIndex) => {
+                                await updateGameSelection(userGame, game, difficultyIndex);
+                            })
+                        );
+                    })
+                );
 
-                    // Reiniciar todos los valores de progreso y estado del juego
-                    userGame.triesname = 0;
-                    userGame.triesimage = [0, 0, 0];
-                    userGame.triessilueta = [0, 0, 0];
-                    userGame.triesopening = [0, 0, 0];
-                    userGame.trieseye = [0, 0, 0];
-                    userGame.triespixel = [0, 0, 0];
-                    userGame.trieswords = [];
-                    userGame.triescolors = [];
-                    userGame.resets = 10;
+                const randomNameGame = await findRandomGame("name", 0);
+                userGame.nameid = randomNameGame._id;
+                userGame.nameSelected = Math.floor(Math.random() * randomNameGame.wordle_game.length);
 
-                    userGame.finishedImage = [false, false, false];
-                    userGame.finishedName = false;
-                    userGame.finishedSilueta = [false, false, false];
-                    userGame.finishedOpening = [false, false, false];
-                    userGame.finishedEye = [false, false, false];
-                    userGame.finishedPixel = [false, false, false];
+                // Reiniciar todos los valores de progreso y estado del juego
+                userGame.triesname = 0;
+                userGame.triesimage = [0, 0, 0];
+                userGame.triessilueta = [0, 0, 0];
+                userGame.triesopening = [0, 0, 0];
+                userGame.trieseye = [0, 0, 0];
+                userGame.triespixel = [0, 0, 0];
+                userGame.trieswords = [];
+                userGame.triescolors = [];
+                userGame.resets = 10;
 
-                    userGame.statusRewardImage = [0, 0, 0];
-                    userGame.statusRewardSilueta = [0, 0, 0];
-                    userGame.statusRewardName = 0;
-                    userGame.statusRewardOpening = [0, 0, 0];
-                    userGame.statusRewardEye = [false, false, false];
-                    userGame.statusRewardPixel = [false, false, false];
+                userGame.finishedImage = [false, false, false];
+                userGame.finishedName = false;
+                userGame.finishedSilueta = [false, false, false];
+                userGame.finishedOpening = [false, false, false];
+                userGame.finishedEye = [false, false, false];
+                userGame.finishedPixel = [false, false, false];
 
-                    await userGame.save();
-                })
-            );
-        }
+                userGame.statusRewardImage = [0, 0, 0];
+                userGame.statusRewardSilueta = [0, 0, 0];
+                userGame.statusRewardName = 0;
+                userGame.statusRewardOpening = [0, 0, 0];
+                userGame.statusRewardEye = [false, false, false];
+                userGame.statusRewardPixel = [false, false, false];
 
-        if (type === false) {
-            await UserQuests.updateMany({}, {
-                $set: {
-                    statusQuestImage: 0,
-                    statusQuestName: 0,
-                    statusQuestSilueta: 0,
-                    statusQuestOpening: 0,
-                    statusQuestPixel: 0,
-                    statusQuestAllGames: 0
-                }
-            });
-        }
+                await userGame.save();
+            })
+        );
+    
+
+
+        await UserQuests.updateMany({}, {
+            $set: {
+                statusQuestImage: 0,
+                statusQuestName: 0,
+                statusQuestSilueta: 0,
+                statusQuestOpening: 0,
+                statusQuestPixel: 0,
+                statusQuestAllGames: 0
+            }
+        });
+        
 
         res.status(200).json({ message: 'Games reset for all users' });
     } catch (err) {
