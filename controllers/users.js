@@ -293,6 +293,51 @@ const updatePower = async (req, res) => {
     }
 };
 
+
+const getNumberCardsUser = async (req, res) => {
+    const { userid } = req.body;
+
+    try {
+        const user = await User.findOne({ _id: userid });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        if (!mongoose.Types.ObjectId.isValid(userid)) {
+            return res.status(400).json({ error: 'Invalid user ID format' });
+        }
+        const objectUserId = new mongoose.Types.ObjectId(userid);
+
+        const userCard = await UserCard.findOne({ userid: userid });
+        if (!userCard) {
+            return res.status(404).json({ error: 'No user cards found for this user' });
+        }
+
+        const userCards = await UserCard.aggregate([
+            { $match: { userid: objectUserId } },
+            { $unwind: '$cards' },
+            {
+                $group: {
+                    _id: '$userid',
+                    uniqueCards: { $addToSet: '$cards' }
+                }
+            }
+        ]);
+
+        if (userCards.length === 0) {
+            return res.status(200).json({ uniqueCards: 0});
+        }
+
+        res.status(200).json({ uniqueCards: userCards[0].uniqueCards.length });
+    } catch (err) {
+        console.error('Error retrieving user cards:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
+
 const getRanking = async (req, res) => {
     try {
         const topTotalPowerUsers = await User.find().sort({ totalPower: -1 }).limit(100);
@@ -359,4 +404,4 @@ const getRanking = async (req, res) => {
 };
 
 
-module.exports = { updateReset, getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan, unlockMode };
+module.exports = { getNumberCardsUser, updateReset, getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan, unlockMode };

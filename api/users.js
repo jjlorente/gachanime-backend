@@ -17,5 +17,6 @@ router.post("/find", UserController.findByUsernameAndPassword);
 router.post("/findGoogle", UserController.findByGoogleAccount);
 router.post("/create", UserController.addUser);
 router.post("/updateReset", UserController.updateReset);
+router.post("/getNumberCards", UserController.getNumberCardsUser);
 
 module.exports = router;
