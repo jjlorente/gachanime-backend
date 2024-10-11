@@ -11,7 +11,7 @@ const findById = async (req, res) => {
         }
         res.status(200).json(dayDoc);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("err: findById days");
     }
 };
 
@@ -23,7 +23,6 @@ const create = async (req, res) => {
         res.status(201).json(dayDoc.lastReset);
 
     } catch (error) {
-        console.error('Error al guardar dia:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }
@@ -42,7 +41,6 @@ const update = async (req, res) => {
         res.status(201).json(dayDoc.lastReset);
 
     } catch (error) {
-        console.error('Error al update dia:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }
@@ -65,7 +63,6 @@ const updateWeek = async (req, res) => {
         res.status(201).json(dayDoc.resetWeek);
 
     } catch (error) {
-        console.error('Error al update dia:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }

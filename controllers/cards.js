@@ -10,7 +10,7 @@ const findAllCards = async (req, res) => {
         const cards = await Card.find();
         res.status(200).json(cards);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("err findAllCards");
     }
 };
 
@@ -78,7 +78,7 @@ const findCardSummoned = async (req, res) => {
         await cardsUser.save();
         res.status(200).json(cards);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("err findCardSummoned");
     }
 };
 

@@ -35,7 +35,6 @@ const addCard = async (req, res) => {
         res.status(201).json(savedCard);
 
     } catch (error) {
-        console.error('Error al guardar la carta en el Market:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -72,7 +71,6 @@ const getDataMarket = async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error retrieving data from Market:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
@@ -103,7 +101,6 @@ const buyCard = async (req, res) => {
 
         res.status(201).json(userGachas);
     } catch (error) {
-        console.error('Error al guardar la carta en el Market:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 
@@ -127,7 +124,6 @@ const cancelCard = async (req, res) => {
 
         res.status(201).json(result);
     } catch (error) {
-        console.error('Error al guardar la carta en el Market:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };

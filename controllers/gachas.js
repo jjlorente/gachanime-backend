@@ -15,7 +15,6 @@ const addGacha = async (req, res) => {
         res.status(201).json(savedGacha);
 
     } catch (error) {
-        console.error('Error al guardar gachas del usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }
@@ -34,7 +33,7 @@ const findById = async (req, res) => {
         }
         res.status(200).json(gachas);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("findById error gachas");
     }
 };
 

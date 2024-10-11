@@ -18,7 +18,7 @@ const findById = async (req, res) => {
         }
         res.status(200).json(userCards);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("Cartas no encontradas");
     }
 };
 
@@ -63,7 +63,7 @@ const calculateTotalPower = async (req, res) => {
 
     res.status(200).json({ totalPower });
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).send("Error al calcular el poder total.");
   }
 };
 
@@ -73,17 +73,16 @@ const calculateTotalPower = async (req, res) => {
 const addUserCard = async (req, res) => {
     const { userId  } = req.body;
     try {
-        let newUserCard = new UserCard({
-            userid: userId,
-            cards: []
-        });
+      let newUserCard = new UserCard({
+          userid: userId,
+          cards: []
+      });
 
-        const savedUserCard = await newUserCard.save();
-        res.status(201).json(savedUserCard);
+      const savedUserCard = await newUserCard.save();
+      res.status(201).json(savedUserCard);
 
     } catch (error) {
-        console.error('Error al guardar UserCard del usuario:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+      res.status(500).json({ error: 'Error interno del servidor' });
     }
 }
 
@@ -102,7 +101,6 @@ const addCardsToUser = async (userId, newCards) => {
 
     return userCard;
   } catch (err) {
-    console.error(err.message);
     throw new Error('Error adding cards to user');
   }
 };

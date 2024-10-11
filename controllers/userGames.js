@@ -18,7 +18,7 @@ const findById = async (req, res) => {
         }
         res.status(200).json(userGames);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("Error al encontrar games");
     }
 };
 
@@ -31,7 +31,7 @@ const findCharactersNames = async (req, res) => {
         }
         res.status(200).json(games);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("Error al findCharactersNames");
     }
 };
 
@@ -49,7 +49,7 @@ const findGameImageById = async (req, res) => {
         }
         res.status(200).json(game);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("Error al findGameImageById");
     }
 };
 
@@ -95,7 +95,7 @@ const findRandomGame = async (gameType, mode) => {
         }
         return game.length > 0 ? game[0] : null;
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error findRandomGame');
         throw error;
     }
 };
@@ -213,7 +213,6 @@ const addNewGamesUser = async (req, res) => {
         res.status(201).json(savedUserGames);
 
     } catch (error) {
-        console.error('Error al guardar savedUserGames del usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }

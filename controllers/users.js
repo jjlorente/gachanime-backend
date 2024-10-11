@@ -10,7 +10,7 @@ const findAllUsers = async (req, res) => {
         const users = await User.find();
         res.status(200).json(users);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send('Error findAllUsers user');
     }
 };
 
@@ -23,7 +23,7 @@ const findById = async (req, res) => {
         }
         res.status(200).json(user);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send('Error findById user');
     }
 };
 
@@ -101,7 +101,6 @@ const updateReset = async (req, res) => {
         await user.save();
         res.status(200).json(user.resetGameDay);
     } catch (err) {
-        console.error('Error updating document:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -145,7 +144,6 @@ const updateLevel = async (req, res) => {
         await user.save();
         res.status(200).json("user updated successfully");
     } catch (err) {
-        console.error('Error updating document:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -177,7 +175,6 @@ const updateUserLan = async (req, res) => {
         await user.save();
         res.status(200).json(user);
     } catch (err) {
-        console.error('Error updating document:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -213,7 +210,6 @@ const updateUser = async (req, res) => {
         await user.save();
         res.status(200).json(user);
     } catch (err) {
-        console.error('Error updating document:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -234,7 +230,6 @@ const unlockMode = async (req, res) => {
         await user.save();
         res.status(200).json(user);
     } catch (err) {
-        console.error('Error updating document:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -296,7 +291,6 @@ const updatePower = async (req, res) => {
         await user.save();
         res.status(200).json("totalPower user updated successfully");
     } catch (err) {
-        console.error('Error updating document:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -338,7 +332,6 @@ const getNumberCardsUser = async (req, res) => {
 
         res.status(200).json({ uniqueCards: userCards[0].uniqueCards.length });
     } catch (err) {
-        console.error('Error retrieving user cards:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
@@ -406,7 +399,6 @@ const getRanking = async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Error fetching rankings:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 };

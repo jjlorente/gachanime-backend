@@ -9,7 +9,7 @@ const find = async (req, res) => {
         }
         res.status(200).json(survey);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("Error: Find survey");
     }
 };
 
@@ -33,7 +33,6 @@ const addVote = async (req, res) => {
         await survey.save();
         return res.status(200).json(survey);
     } catch (err) {
-        console.error('Error al añadir voto:', err.message);
         return res.status(500).json({ error: 'Error al añadir voto' });
     }
 };

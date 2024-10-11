@@ -19,7 +19,7 @@ const findById = async (req, res) => {
         }
         res.status(200).json(userQuests);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("err findById quests");
     }
 };
 
