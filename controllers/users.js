@@ -249,6 +249,14 @@ const addUser = async (req, res) => {
             return res.status(404).json({ error: 'Nombre de usuario en uso' });
         }
 
+        if (!password) {
+            return res.status(404).json({ error: 'Password necesaria' });
+        }
+
+        if (!email) {
+            return res.status(404).json({ error: 'Email necesario' });
+        }
+
         if (existingUserByEmail) {
             return res.status(404).json({ error: 'Correo electrónico en uso' });
         }
