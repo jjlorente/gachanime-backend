@@ -185,7 +185,7 @@ const addNewGamesUser = async (req, res) => {
             triesopening: [0, 0, 0],
             trieseye: [0, 0, 0],
             triespixel: [0, 0, 0],
-            resets: 10,
+            resets: 5,
 
             finishedImage: [false, false, false],
             finishedName: false,
@@ -500,7 +500,7 @@ const resetDailyGames = async (req, res) => {
         userGame.triespixel = [0, 0, 0];
         userGame.trieswords = [];
         userGame.triescolors = [];
-        userGame.resets = 10;
+        userGame.resets = 5;
 
         userGame.finishedImage = [false, false, false];
         userGame.finishedName = false;
