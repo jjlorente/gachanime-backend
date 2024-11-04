@@ -341,54 +341,45 @@ const getNumberCardsUser = async (req, res) => {
 
 const getRanking = async (req, res) => {
     try {
-        const topTotalPowerUsers = await User.find().sort({ totalPower: -1 }).limit(100);
-        
-        const topLevelUsers = await User.find().sort({ profileLevel: -1 }).limit(100);
-
-        const totalCards = await Card.find().count();
-
-        const topCollection = await UserCard.aggregate([
-            {
-                $unwind: '$cards'
-            },
-            {
-                $group: {
-                    _id: '$userid',
-                    uniqueCards: { $addToSet: '$cards' } 
+        const [topTotalPowerUsers, topLevelUsers, totalCards, topCollection] = await Promise.all([
+            User.find().sort({ totalPower: -1 }).limit(100),
+            User.find().sort({ profileLevel: -1 }).limit(100),
+            Card.find().count(),
+            UserCard.aggregate([
+                { $unwind: '$cards' },
+                {
+                    $group: {
+                        _id: '$userid',
+                        uniqueCards: { $addToSet: '$cards' }
+                    }
+                },
+                {
+                    $addFields: {
+                        totalUniqueCards: { $size: '$uniqueCards' }
+                    }
+                },
+                { $sort: { totalUniqueCards: -1 } },
+                { $limit: 100 },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'userDetails'
+                    }
+                },
+                { $unwind: '$userDetails' },
+                {
+                    $project: {
+                        _id: 0,
+                        totalUniqueCards: 1,
+                        'userDetails.username': 1,
+                        'userDetails.profileLevel': 1,
+                        'userDetails.totalPower': 1,
+                        'userDetails.profilePicture': 1,
+                    }
                 }
-            },
-            {
-                $addFields: {
-                    totalUniqueCards: { $size: '$uniqueCards' }
-                }
-            },
-            {
-                $sort: { totalUniqueCards: -1 }
-            },
-            {
-                $limit: 100
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: '_id',
-                    foreignField: '_id', 
-                    as: 'userDetails'
-                }
-            },
-            {
-                $unwind: '$userDetails'
-            },
-            {
-                $project: {
-                    _id: 0,
-                    totalUniqueCards: 1,
-                    'userDetails.username': 1,
-                    'userDetails.profileLevel': 1,
-                    'userDetails.totalPower': 1,
-                    'userDetails.profilePicture': 1,
-                }
-            }
+            ])
         ]);
         
         res.status(200).json({
@@ -402,6 +393,7 @@ const getRanking = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 
 module.exports = { getNumberCardsUser, updateReset, getRanking, updatePower, findAllUsers, findByUsernameAndPassword, addUser, findByGoogleAccount, findById, updateLevel, updateUser, updateUserLan, unlockMode };

@@ -33,7 +33,7 @@ const findAllQuests = async (req, res) => {
 
         res.status(200).json(quests);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send("err findAllQuests quests");
     }
 };
 
